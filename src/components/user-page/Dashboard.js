@@ -112,6 +112,7 @@ const Dashboard = () => {
     }
 
     const editCourse = (Id) => {
+        setButton(false)
         let yourConfig = {
             headers: {
                 Authorization: "Bearer " + token
@@ -241,6 +242,8 @@ const Dashboard = () => {
                     <div className="bugs-cards">
                         <div className="container m-5 pb-5">
                             {login.roles === "user" && <h2>Road-Map</h2>}
+                            {login.roles === "user" && <h4>We Are Working On</h4>}
+
                             {login.roles === "admin" && <h2>Un-Published</h2>}
 
                             {login.roles === "admin" &&
@@ -288,8 +291,9 @@ const Dashboard = () => {
                                     </tbody>
                                 </table>
                             }
+
                             {login.roles === "admin" && <h2>Published</h2>}
-                            <table className="table table-striped table-dark">
+                            <table className="table  table-striped table-dark">
                                 <thead>
                                     <tr>
                                         <th scope="col">ID</th>
@@ -304,7 +308,7 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Array.isArray(bugs) ? bugs.filter(n => n.published === true)
+                                    {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Open")
                                         .map((bugs) => (
                                             <tr key={bugs.bugId}>
                                                 <td>{bugs.bugId}</td>
@@ -328,6 +332,90 @@ const Dashboard = () => {
                                         )) : []}
                                 </tbody>
                             </table>
+                            {login.roles === "user" && <h4>We Finished working On</h4>}
+                            {login.roles === "user" &&
+
+                                <table className="table  table-striped table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Asigned to</th>
+                                            <th scope="col">status</th>
+                                            <th scope="col">Priority</th>
+                                            {login.roles === "admin" && <th></th>}
+                                            {login.roles === "admin" && <th></th>}
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Open")
+                                            .map((bugs) => (
+                                                <tr key={bugs.bugId}>
+                                                    <td>{bugs.bugId}</td>
+                                                    <td >{bugs.bugName}</td>
+                                                    <td >{bugs.bugDesc}</td>
+                                                    <td>{bugs.assignedTo}</td>
+                                                    <td >{bugs.bugStatus}</td>
+                                                    <td >{bugs.bugUrgency}</td>
+                                                    {login.roles == "admin" &&
+                                                        <td>
+                                                            <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
+                                                        </td>
+                                                    }
+                                                    {login.roles == "admin" &&
+                                                        <td>
+                                                            <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
+                                                        </td>
+                                                    }
+
+                                                </tr>
+                                            )) : []}
+                                    </tbody>
+                                </table>
+                            }
+                            {login.roles === "admin" && <h2>Closed</h2>}
+                            {login.roles === "admin" &&
+                                <table className="table table-striped table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Asigned to</th>
+                                            <th scope="col">status</th>
+                                            {login.roles === "admin" && <th></th>}
+                                            {login.roles === "admin" && <th></th>}
+                                            {login.roles === "admin" && <th></th>}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Array.isArray(bugs) ? bugs.filter(n => n.published == true).filter(n => n.bugStatus == "Close")
+                                            .map((bugs) => (
+                                                <tr key={bugs.bugId}>
+                                                    <td>{bugs.bugId}</td>
+                                                    <td >{bugs.bugName}</td>
+                                                    <td >{bugs.bugDesc}</td>
+                                                    <td>{bugs.assignedTo}</td>
+                                                    <td >{bugs.bugStatus}</td>
+                                                    <td >{bugs.bugUrgency}</td>
+                                                    {login.roles == "admin" &&
+                                                        <td>
+                                                            <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
+                                                        </td>
+                                                    }
+                                                    {login.roles == "admin" &&
+                                                        <td>
+                                                            <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
+                                                        </td>
+                                                    }
+                                                   
+                                                </tr>
+                                            )) : []}
+                                    </tbody>
+                                </table>
+                            }
                         </div>
                     </div>
                 </div>
@@ -349,14 +437,14 @@ const Dashboard = () => {
                             </select>
                         </div>
                         <div className="input-group mb-3 justify-content-center">
-                            <select value={status} onChange={(e) => setStatus(e.target.value)}  id="state" className="input-group-text">
+                            <select value={status} onChange={(e) => setStatus(e.target.value)} id="state" className="input-group-text">
                                 <option>Open</option>
                                 <option>Close</option>
                             </select>
                         </div>
                         <div className="input-group mb-3 justify-content-center">
-                            <select value={urgency} onChange={(e) => setUrgency(e.target.value)}   id="state" className="input-group-text">
-                            <option>Urgent</option>
+                            <select value={urgency} onChange={(e) => setUrgency(e.target.value)} id="state" className="input-group-text">
+                                <option>Urgent</option>
                                 <option>Top</option>
                                 <option>Modrate</option>
                                 <option>low</option>
