@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './Dashboard.css'
 import { Modal } from 'react-bootstrap';
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
+import { BsFillBugFill } from 'react-icons/bs';
+import { TbBugOff } from 'react-icons/tb';
 
 const Dashboard = () => {
     const [login, setLogin] = useState({
@@ -198,6 +202,32 @@ const Dashboard = () => {
 
     }
 
+    const renderSwitch = (param) => {
+        console.log("parm " + param)
+        switch (param) {
+            case "Open":
+                return "badge badge-success bg-danger";
+                break;
+            case "Close":
+                return "badge badge-success bg-primary";
+                break;
+            case "urgent":
+                return "badge badge-success bg-danger"
+                break;
+            case "top":
+                return "badge badge-success bg-warning"
+                break;
+            case "modrate":
+                return "badge badge-success bg-info"
+                break;
+            case "low":
+                return "badge badge-success bg-success"
+                break;
+            default:
+                return "badge badge-success bg-secondary"
+        }
+    }
+
     const publishBug = async (bug) => {
         const bugP = {
             "bugId": bug.bugId,
@@ -241,8 +271,8 @@ const Dashboard = () => {
                 <div className="bugs-container">
                     <div className="bugs-cards">
                         <div className="container m-5 pb-5">
-                            {login.roles === "user" && <h2>Road-Map</h2>}
-                            {login.roles === "user" && <h4>We Are Working On</h4>}
+
+
 
                             {login.roles === "admin" && <h2>Un-Published</h2>}
 
@@ -293,6 +323,8 @@ const Dashboard = () => {
                             }
 
                             {login.roles === "admin" && <h2>Published</h2>}
+                            {login.roles === "admin" && 
+
                             <table className="table  table-striped table-dark">
                                 <thead>
                                     <tr>
@@ -332,49 +364,8 @@ const Dashboard = () => {
                                         )) : []}
                                 </tbody>
                             </table>
-                            {login.roles === "user" && <h4>We Finished working On</h4>}
-                            {login.roles === "user" &&
+}
 
-                                <table className="table  table-striped table-dark">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Title</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Asigned to</th>
-                                            <th scope="col">status</th>
-                                            <th scope="col">Priority</th>
-                                            {login.roles === "admin" && <th></th>}
-                                            {login.roles === "admin" && <th></th>}
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Open")
-                                            .map((bugs) => (
-                                                <tr key={bugs.bugId}>
-                                                    <td>{bugs.bugId}</td>
-                                                    <td >{bugs.bugName}</td>
-                                                    <td >{bugs.bugDesc}</td>
-                                                    <td>{bugs.assignedTo}</td>
-                                                    <td >{bugs.bugStatus}</td>
-                                                    <td >{bugs.bugUrgency}</td>
-                                                    {login.roles == "admin" &&
-                                                        <td>
-                                                            <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
-                                                        </td>
-                                                    }
-                                                    {login.roles == "admin" &&
-                                                        <td>
-                                                            <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
-                                                        </td>
-                                                    }
-
-                                                </tr>
-                                            )) : []}
-                                    </tbody>
-                                </table>
-                            }
                             {login.roles === "admin" && <h2>Closed</h2>}
                             {login.roles === "admin" &&
                                 <table className="table table-striped table-dark">
@@ -410,13 +401,38 @@ const Dashboard = () => {
                                                             <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
                                                         </td>
                                                     }
-                                                   
+
                                                 </tr>
                                             )) : []}
                                     </tbody>
                                 </table>
                             }
+                            {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
+                            {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
+                            <VerticalTimeline>
+                                {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Open")
+                                    .map((bugs) => (
+                                        <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'red', color: '#fff' }} icon={<BsFillBugFill />} >
+                                            <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
+                                            <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
+                                            <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
+                                            <p>{bugs.bugDesc}</p>
+                                            <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                        </VerticalTimelineElement>
+                                    )) : []}
+                                {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Close")
+                                    .map((bugs) => (
+                                        <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'green', color: '#fff' }} icon={<TbBugOff />} >
+                                            <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
+                                            <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
+                                            <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
+                                            <p>{bugs.bugDesc}</p>
+                                            <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                        </VerticalTimelineElement>
+                                    )) : []}
+                            </VerticalTimeline>
                         </div>
+
                     </div>
                 </div>
                 <Modal show={modal} onHide={() => handleModal(false)}>
