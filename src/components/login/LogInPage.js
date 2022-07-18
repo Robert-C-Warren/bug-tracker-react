@@ -37,7 +37,6 @@ const LogInPage = () => {
                 setVisiable(false);
             }, 5000))
 
-        console.log(token)
 
         {/*   const fetchToken = await axios.post("http://localhost:8080/auth/login", loginCredential)
         setToken(fetchToken.data.token)

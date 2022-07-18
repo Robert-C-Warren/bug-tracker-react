@@ -1,8 +1,8 @@
 import React from "react";
 import axios from 'axios';
 
-const getToken = () => {
-    return localStorage.getItem('USER_Key');
+export const getToken = () => {
+    return localStorage.getItem('token');
 }
 
 export const userLogin = (authRequest) => {

@@ -6,6 +6,8 @@ import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeli
 import 'react-vertical-timeline-component/style.min.css';
 import { BsFillBugFill } from 'react-icons/bs';
 import { TbBugOff } from 'react-icons/tb';
+import { getToken } from '../api/authenticationService'
+import icon from '../../components/icon-bug-15.jpg'
 
 const Dashboard = () => {
     const [login, setLogin] = useState({
@@ -28,7 +30,6 @@ const Dashboard = () => {
     const [ID, setId] = useState(0);
     const [title, setTitle] = useState("");
     const [asignTo, setAsignTo] = useState("");
-    const [publish, setpublish] = useState(true);
     const [status, setStatus] = useState("");
     const [desc, setDesc] = useState("");
     const [urgency, setUrgency] = useState("");
@@ -46,13 +47,11 @@ const Dashboard = () => {
 
 
     const getUserInfo = async () => {
-        let ttk = localStorage.getItem('token')
-        setToken(ttk)
-        console.log(token)
+        setToken(getToken())
 
         let yourConfig = {
             headers: {
-                Authorization: "Bearer " + token
+                Authorization: "Bearer " + getToken()
             }
         }
 
@@ -73,21 +72,17 @@ const Dashboard = () => {
         getBugs()
     }
 
+    const getSetToken = () => {
+        let ttk = localStorage.getItem('token')
+        setToken(ttk)
+        getUserInfo();
+    }
+
     useEffect(() => {
-        getUserInfo()
-        getBugs()
+        getSetToken();
         setTimeout(function () {
             getUserInfo()
-            getBugs()
-        }, 250)
-        setTimeout(function () {
-            getUserInfo()
-            getBugs()
-        }, 500)
-        setTimeout(function () {
-            getUserInfo()
-            getBugs()
-        }, 750)
+        }, 5000)
         setLoading(false)
     }, [])
 
@@ -95,14 +90,13 @@ const Dashboard = () => {
 
         let yourConfig = {
             headers: {
-                Authorization: "Bearer " + token
+                Authorization: "Bearer " + getToken()
             }
         }
         await axios.get("http://localhost:8080/bugs", yourConfig)
             .then(response => setBugs(response.data))
 
 
-        console.log(bugs)
     }
 
 
@@ -145,7 +139,6 @@ const Dashboard = () => {
             "published": true
         }
 
-        console.log(bug)
         let yourConfig = {
             headers: {
                 Authorization: "Bearer " + token
@@ -203,21 +196,20 @@ const Dashboard = () => {
     }
 
     const renderSwitch = (param) => {
-        console.log("parm " + param)
         switch (param) {
             case "Open":
                 return "badge badge-success bg-danger";
                 break;
             case "Close":
-                return "badge badge-success bg-primary";
+                return "badge badge-success bg-success";
                 break;
-            case "urgent":
+            case "Urgent":
                 return "badge badge-success bg-danger"
                 break;
-            case "top":
+            case "Top":
                 return "badge badge-success bg-warning"
                 break;
-            case "modrate":
+            case "Modrate":
                 return "badge badge-success bg-info"
                 break;
             case "low":
@@ -253,17 +245,23 @@ const Dashboard = () => {
     }
 
     if (isLoading) {
-        return (<div><h1>Loading...</h1></div>)
+        return (<div className="spinner-border text-success" role="status">
+            <span className="sr-only">Loading...</span>
+        </div>)
     }
 
     return (
         <>
             <div className="dashboard-fullpage">
                 <nav className="navbar  navbar-dark bg-dark">
+                    <div className="dash">
+                    < img  className="imageIcon" src={icon}/>
                     <h3 className="m-2 text-white">Dashboard</h3>
+                    </div>
+                    
                     <div className="navAdd">
-                        {login.roles == "admin" && <h4 className="text-white">{login.name}</h4>}
-                        {login.roles == "user" && <h4 className="text-white ">{login.name}</h4>}
+                        <h4 className="text-white">{login.name}</h4>
+                        
                         <button className="m-2 btn btn-primary" onClick={(e) => addEditHandle(e)}>Add</button>
                         <button className="m-2 btn btn-success" onClick={() => getUserInfo()}>Load</button>
                     </div>
@@ -292,7 +290,7 @@ const Dashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Array.isArray(bugs) ? bugs.filter(n => n.published != true)
+                                        {Array.isArray(bugs) ? bugs.filter(n => n.published !== true)
                                             .map((bugs) => (
                                                 <tr key={bugs.bugId}>
                                                     <td>{bugs.bugId}</td>
@@ -301,17 +299,17 @@ const Dashboard = () => {
                                                     <td>{bugs.assignedTo}</td>
                                                     <td >{bugs.bugStatus}</td>
                                                     <td >{bugs.bugUrgency}</td>
-                                                    {login.roles == "admin" &&
+                                                    {login.roles === "admin" &&
                                                         <td>
                                                             <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
                                                         </td>
                                                     }
-                                                    {login.roles == "admin" &&
+                                                    {login.roles === "admin" &&
                                                         <td>
                                                             <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
                                                         </td>
                                                     }
-                                                    {login.roles == "admin" &&
+                                                    {login.roles === "admin" &&
                                                         <td>
                                                             <button onClick={() => publishBug(bugs)} className="btn btn-success btn-sm">publish</button>
                                                         </td>
@@ -323,48 +321,48 @@ const Dashboard = () => {
                             }
 
                             {login.roles === "admin" && <h2>Published</h2>}
-                            {login.roles === "admin" && 
+                            {login.roles === "admin" &&
 
-                            <table className="table  table-striped table-dark">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Asigned to</th>
-                                        <th scope="col">status</th>
-                                        <th scope="col">Priority</th>
-                                        {login.roles === "admin" && <th></th>}
-                                        {login.roles === "admin" && <th></th>}
+                                <table className="table  table-striped table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Asigned to</th>
+                                            <th scope="col">status</th>
+                                            <th scope="col">Priority</th>
+                                            {login.roles === "admin" && <th></th>}
+                                            {login.roles === "admin" && <th></th>}
 
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Open")
-                                        .map((bugs) => (
-                                            <tr key={bugs.bugId}>
-                                                <td>{bugs.bugId}</td>
-                                                <td >{bugs.bugName}</td>
-                                                <td >{bugs.bugDesc}</td>
-                                                <td>{bugs.assignedTo}</td>
-                                                <td >{bugs.bugStatus}</td>
-                                                <td >{bugs.bugUrgency}</td>
-                                                {login.roles == "admin" &&
-                                                    <td>
-                                                        <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
-                                                    </td>
-                                                }
-                                                {login.roles == "admin" &&
-                                                    <td>
-                                                        <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
-                                                    </td>
-                                                }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
+                                            .map((bugs) => (
+                                                <tr key={bugs.bugId}>
+                                                    <td>{bugs.bugId}</td>
+                                                    <td >{bugs.bugName}</td>
+                                                    <td >{bugs.bugDesc}</td>
+                                                    <td>{bugs.assignedTo}</td>
+                                                    <td >{bugs.bugStatus}</td>
+                                                    <td >{bugs.bugUrgency}</td>
+                                                    {login.roles === "admin" &&
+                                                        <td>
+                                                            <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
+                                                        </td>
+                                                    }
+                                                    {login.roles === "admin" &&
+                                                        <td>
+                                                            <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
+                                                        </td>
+                                                    }
 
-                                            </tr>
-                                        )) : []}
-                                </tbody>
-                            </table>
-}
+                                                </tr>
+                                            )) : []}
+                                    </tbody>
+                                </table>
+                            }
 
                             {login.roles === "admin" && <h2>Closed</h2>}
                             {login.roles === "admin" &&
@@ -382,7 +380,7 @@ const Dashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Array.isArray(bugs) ? bugs.filter(n => n.published == true).filter(n => n.bugStatus == "Close")
+                                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")
                                             .map((bugs) => (
                                                 <tr key={bugs.bugId}>
                                                     <td>{bugs.bugId}</td>
@@ -391,12 +389,12 @@ const Dashboard = () => {
                                                     <td>{bugs.assignedTo}</td>
                                                     <td >{bugs.bugStatus}</td>
                                                     <td >{bugs.bugUrgency}</td>
-                                                    {login.roles == "admin" &&
+                                                    {login.roles === "admin" &&
                                                         <td>
                                                             <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
                                                         </td>
                                                     }
-                                                    {login.roles == "admin" &&
+                                                    {login.roles === "admin" &&
                                                         <td>
                                                             <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
                                                         </td>
@@ -410,7 +408,7 @@ const Dashboard = () => {
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
                             {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
                             <VerticalTimeline>
-                                {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Open")
+                                {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
                                     .map((bugs) => (
                                         <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'red', color: '#fff' }} icon={<BsFillBugFill />} >
                                             <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
@@ -420,7 +418,7 @@ const Dashboard = () => {
                                             <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
                                         </VerticalTimelineElement>
                                     )) : []}
-                                {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus == "Close")
+                                {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")
                                     .map((bugs) => (
                                         <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'green', color: '#fff' }} icon={<TbBugOff />} >
                                             <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
