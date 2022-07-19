@@ -34,6 +34,8 @@ const Dashboard = () => {
     const [desc, setDesc] = useState("");
     const [urgency, setUrgency] = useState("");
 
+    const [comments, setComments] = useState();
+
     const closeModal = () => {
         setId(bugs[bugs.length - 1].bugId + 1)
         setAsignTo('')
@@ -244,24 +246,57 @@ const Dashboard = () => {
         }, 250)
     }
 
+    const postComent = async (id) => {
+        const comment = {
+            "text": comments,
+            "postedBy": login.name
+        }
+
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            },
+        };
+
+        await axios.post("http://localhost:8080/comment/" + id, comment, yourConfig)
+        setTimeout(function () {
+            getBugs()
+        }, 250)
+    }
+
+    const deleteComment = async (bid, id) => {
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            },
+        };
+
+        await axios.delete("http://localhost:8080/comment/delete/" + bid + "/" + id, yourConfig)
+        setTimeout(function () {
+            getBugs()
+        }, 250)
+    }
+
     if (isLoading) {
         return (<div className="spinner-border text-success" role="status">
             <span className="sr-only">Loading...</span>
         </div>)
     }
 
+
+
     return (
         <>
             <div className="dashboard-fullpage">
                 <nav className="navbar  navbar-dark bg-dark">
                     <div className="dash">
-                    < img  className="imageIcon" src={icon}/>
-                    <h3 className="m-2 text-white">Dashboard</h3>
+                        < img className="imageIcon" src={icon} />
+                        <h3 className="m-2 text-white">Dashboard</h3>
                     </div>
-                    
+
                     <div className="navAdd">
                         <h4 className="text-white">{login.name}</h4>
-                        
+
                         <button className="m-2 btn btn-primary" onClick={(e) => addEditHandle(e)}>Add</button>
                         <button className="m-2 btn btn-success" onClick={() => getUserInfo()}>Load</button>
                     </div>
@@ -411,11 +446,34 @@ const Dashboard = () => {
                                 {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
                                     .map((bugs) => (
                                         <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'red', color: '#fff' }} icon={<BsFillBugFill />} >
-                                            <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
-                                            <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
-                                            <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
-                                            <p>{bugs.bugDesc}</p>
-                                            <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                            <div className="vCard">
+                                                <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
+                                                <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
+                                                <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
+                                                <p>{bugs.bugDesc}</p>
+                                                <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                                {Array.isArray(bugs.bugComments) ? bugs.bugComments.map((bugsC) => (
+                                                    <div className="commentContainer">
+                                                        <div className="commentSection">
+                                                            <div className="comment mt-4 text-justify float-left">
+                                                                <span className="commentp">{bugsC.postedBy}</span>
+                                                                <span>{"- " + bugsC.postedAt[1] + "/" + bugsC.postedAt[2] + "/" + bugsC.postedAt[0]}</span>
+                                                                <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)}  className="btn  btn-danger btn-sm commentButton">X</button>}</span>
+                                                                <br />
+                                                                <div className="commentd"><span >{bugsC.text} </span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )) : []}
+                                            </div>
+                                            <div className="cardComment">
+                                                <div class="input-group mb-3">
+                                                    <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)}  />
+                                                    <div className="input-group-append">
+                                                        <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
+                                                    </div>
+                                                </div>                  
+                                            </div>
                                         </VerticalTimelineElement>
                                     )) : []}
                                 {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")

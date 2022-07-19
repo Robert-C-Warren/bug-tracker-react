@@ -63,6 +63,42 @@ body{
 
     
 }
+.commentSection{
+    border-radius: 15px;
+    background-color : rgba(101, 101, 101, 0.112);
+}
+.commentp{
+    font-size : 15px;
+    font-weight: bold;
+    padding: 15px;
+}
+.commentd{
+   
+    font-weight: 450;
+    padding: 10px;
+    
+}
+
+.commentButton{
+    border-radius: 70px;
+    width:  10%;
+    display: block;
+    float: right;
+}
+.cardComment{
+    display: none;
+    padding-top: 20px;
+    
+}
+
+.vCard:hover + .cardComment{
+    display: block;
+}
+
+.cardComment:hover{
+    display: block;
+
+}
 
 @keyframes gradientBG {
 	0% {
