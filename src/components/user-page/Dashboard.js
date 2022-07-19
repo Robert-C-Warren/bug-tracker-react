@@ -88,10 +88,7 @@ const Dashboard = () => {
         setLoading(false)
     }, [])
 
-    const logout = () => {
-        localStorage.clear();
-        window.location.href = '/'
-    }
+
 
     const getBugs = async () => {
 
@@ -303,7 +300,7 @@ const Dashboard = () => {
                         <h4 className="text-white">{login.name}</h4>
 
                         <button className="m-2 btn btn-primary" onClick={(e) => addEditHandle(e)}>Add</button>
-                        <button className="m-2 btn btn-outline-light" onClick={() => logout()}>Logout</button>
+
                     </div>
                 </nav>
                 <div className="bugs-container">
