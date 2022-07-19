@@ -111,6 +111,12 @@ const Dashboard = () => {
         setModal(true)
     }
 
+    //Function to logout
+    const logout = () => {
+        localStorage.clear();
+        window.location.href = '/login'
+    }
+
     const editCourse = (Id) => {
         setButton(false)
         let yourConfig = {
@@ -298,7 +304,7 @@ const Dashboard = () => {
                         <h4 className="text-white">{login.name}</h4>
 
                         <button className="m-2 btn btn-primary" onClick={(e) => addEditHandle(e)}>Add</button>
-                        <button className="m-2 btn btn-success" onClick={() => getUserInfo()}>Load</button>
+                        <button className="m-2 btn btn-logout" onClick={() => logout()}>Logout</button>
                     </div>
                 </nav>
                 <div className="bugs-container">
