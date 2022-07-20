@@ -31,7 +31,7 @@ const Dashboard = () => {
     const [ID, setId] = useState(0);
     const [title, setTitle] = useState("");
     const [asignTo, setAsignTo] = useState("");
-    const [status, setStatus] = useState("Open");
+    const [status, setStatus] = useState("");
     const [desc, setDesc] = useState("");
     const [urgency, setUrgency] = useState("Urgent");
 
@@ -76,7 +76,7 @@ const Dashboard = () => {
     }
 
     const getSetToken = () => {
-        setStatus(bugs.bugStatus + 1)
+        
         let ttk = localStorage.getItem('token')
         setToken(ttk)
         getUserInfo();
@@ -96,7 +96,7 @@ const Dashboard = () => {
     }
 
     const getBugs = async () => {
-
+        
         let yourConfig = {
             headers: {
                 Authorization: "Bearer " + getToken()
