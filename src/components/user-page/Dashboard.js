@@ -7,6 +7,7 @@ import 'react-vertical-timeline-component/style.min.css';
 import { BsFillBugFill } from 'react-icons/bs';
 import { TbBugOff } from 'react-icons/tb';
 import { getToken } from '../api/authenticationService'
+import {MdDeleteForever} from "react-icons/md"
 import icon from '../../components/icon-bug-15.jpg'
 
 const Dashboard = () => {
@@ -14,6 +15,7 @@ const Dashboard = () => {
         roles: ""
     });
     const [modal, setModal] = useState();
+    const [modalUser, setModalUser] = useState(false);
     const [buttonHandle, setButton] = useState();
     const [token, setToken] = useState();
     const [isLoading, setLoading] = useState(true)
@@ -32,9 +34,14 @@ const Dashboard = () => {
     const [asignTo, setAsignTo] = useState("");
     const [status, setStatus] = useState("");
     const [desc, setDesc] = useState("");
-    const [urgency, setUrgency] = useState("");
-
+    const [urgency, setUrgency] = useState("Urgent");
+    const [users, setUsers] = useState();
     const [comments, setComments] = useState();
+
+    const[IDuser, setIDuser] = useState();
+    const[name, setName] = useState();
+    const[email, setEmail] = useState();
+    const[role, setRole] = useState();
 
     const closeModal = () => {
         setId(bugs[bugs.length - 1].bugId + 1)
@@ -59,22 +66,24 @@ const Dashboard = () => {
 
         await axios.get("http://localhost:8080/auth/userinfo", yourConfig)
             .then(response => setLogin(response.data))
-        {/*    
-        .catch(err => {
-                if (!err.ok) {
-                    setError(err.message)
-                    setVisiable(true)
-                    setTimeout(function () {
-                        setVisiable(false);
-                        setError('');
-                    }, 5000)
-                }
-            })
-        */}
+      
         getBugs()
     }
 
+    const getAllUsers = async () => {
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + getToken()
+            }
+        }
+        await axios.get('http://localhost:8080/users', yourConfig)
+        .then(response => setUsers(response.data))
+
+        
+    }
+
     const getSetToken = () => {
+        
         let ttk = localStorage.getItem('token')
         setToken(ttk)
         getUserInfo();
@@ -82,14 +91,22 @@ const Dashboard = () => {
 
     useEffect(() => {
         getSetToken();
+        getAllUsers();
+
         setTimeout(function () {
             getUserInfo()
         }, 5000)
         setLoading(false)
+        console.log(users);
     }, [])
 
-    const getBugs = async () => {
+    const logout = () => {
+        localStorage.clear();
+        window.location.href = '/'
+    }
 
+    const getBugs = async () => {
+        
         let yourConfig = {
             headers: {
                 Authorization: "Bearer " + getToken()
@@ -97,8 +114,8 @@ const Dashboard = () => {
         }
         await axios.get("http://localhost:8080/bugs", yourConfig)
             .then(response => setBugs(response.data))
-
-
+            console.log(getToken())
+            console.log(bugs);
     }
 
 
@@ -106,10 +123,15 @@ const Dashboard = () => {
         setModal(false)
     }
 
+    const handleModalUser = () => {
+        setModalUser(!modalUser)
+    }
+
     const addEditHandle = (e) => {
         setButton(e)
         setModal(true)
     }
+
 
     //Function to logout
     const logout = () => {
@@ -120,6 +142,7 @@ const Dashboard = () => {
     const switchView = () => {
         window.location.href = '/userview'
     }
+
 
     const editCourse = (Id) => {
         setButton(false)
@@ -137,6 +160,21 @@ const Dashboard = () => {
                 setUrgency(result.data.bugUrgency)))
 
         setModal(true)
+    }
+    const editUser = (Id) => {
+        setButton(false)
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        }
+        axios.get("http://localhost:8080/user/" + Id, yourConfig)
+            .then(result => (setIDuser(result.data.userId),
+                setName(result.data.name),
+                setEmail(result.data.email),
+                setRole(result.data.role)))
+
+        setModalUser(true);
     }
 
     const updateCourse = async (e) => {
@@ -166,6 +204,26 @@ const Dashboard = () => {
 
     }
 
+    const updateUser = async (e) => {
+        e.preventDefault();
+        const user = {
+            "userId": IDuser,
+            "name": name,
+            "email": email,
+            "role": role
+        }
+
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            },
+
+        };
+        await axios.put("http://localhost:8080/users", user, yourConfig)
+        handleModalUser
+
+    }
+
     const deleteCourse = (id) => {
         let yourConfig = {
             headers: {
@@ -178,6 +236,19 @@ const Dashboard = () => {
             getBugs()
         }, 250)
 
+    }
+
+    const deleteUser = (id) => {
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        }
+        axios.delete("http://localhost:8080/user/" + id, yourConfig)
+        setModalUser(false)
+        setTimeout(function () {
+            getAllUsers()
+        }, 250)
     }
 
     const addbug = (e) => {
@@ -308,7 +379,7 @@ const Dashboard = () => {
                         <h4 className="text-white">{login.name}</h4>
 
                         <button className="m-2 btn btn-primary" onClick={(e) => addEditHandle(e)}>Add</button>
-                        <button className="m-2 btn btn-logout" onClick={() => logout()}>Logout</button>
+                        <button className="m-2 btn btn-outline-light" onClick={() => logout()}>Logout</button>
                     </div>
                 </nav>
                 <div className="bugs-container">
@@ -368,7 +439,6 @@ const Dashboard = () => {
                             
                             {login.roles === "admin" && <h2>Published</h2>}
                             {login.roles === "admin" &&
-
                                 <table className="table  table-striped table-dark">
                                     <thead>
                                         <tr>
@@ -453,6 +523,42 @@ const Dashboard = () => {
                                     </tbody>
                                 </table>
                             }
+
+                            {login.roles === "admin" && <h2>User List</h2>}
+                            {login.roles === "admin" && 
+                            <table className="table table-striped table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Role</th>
+                                        {login.roles === "admin" && <th></th>}
+                                        {login.roles === "admin" && <th></th>} 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Array.isArray(users) ? users.map((user) => (
+                                        <tr key={user.userId}>
+                                            <td>{user.userId}</td>
+                                            <td>{user.email}</td>
+                                            <td>{user.name}</td>
+                                            <td>{user.role}</td>
+                                            {login.roles === "admin" &&
+                                                <td>
+                                                    <button onClick={() => editUser(user.userId)} className="btn btn-primary btn-sm">Edit</button>
+                                                </td>
+                                            }
+                                            {login.roles === "admin" &&
+                                                <td>
+                                                    <button onClick={() => deleteUser(user.userId)} className="btn btn-danger btn-sm">Delete</button>
+                                                </td>
+                                            }
+                                        </tr>
+                                    )) : []}
+                                </tbody>
+                            </table>}
+
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
                         
                             
@@ -484,7 +590,7 @@ const Dashboard = () => {
                                                             <div className="comment mt-4 text-justify float-left">
                                                                 <span className="commentp">{bugsC.postedBy}</span>
                                                                 <span>{"- " + bugsC.postedAt[1] + "/" + bugsC.postedAt[2] + "/" + bugsC.postedAt[0]}</span>
-                                                                <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)}  className="btn  btn-danger btn-sm commentButton">X</button>}</span>
+                                                                <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">{ <MdDeleteForever /> }</button>}</span>
                                                                 <br />
                                                                 <div className="commentd"><span >{bugsC.text} </span></div>
                                                             </div>
@@ -494,22 +600,46 @@ const Dashboard = () => {
                                             </div>
                                             <div className="cardComment">
                                                 <div class="input-group mb-3">
-                                                    <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)}  />
+                                                    <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
                                                     <div className="input-group-append">
                                                         <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
                                                     </div>
-                                                </div>                  
+                                                </div>
                                             </div>
                                         </VerticalTimelineElement>
                                     )) : []}
                                 {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")
                                     .map((bugs) => (
                                         <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'green', color: '#fff' }} icon={<TbBugOff />} >
-                                            <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
-                                            <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
-                                            <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
-                                            <p>{bugs.bugDesc}</p>
-                                            <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                            <div className="vCard">
+                                                <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
+                                                <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
+                                                <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
+                                                <p>{bugs.bugDesc}</p>
+                                                <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                                {Array.isArray(bugs.bugComments) ? bugs.bugComments.map((bugsC) => (
+                                                    <div className="commentContainer">
+                                                        <div className="commentSection">
+                                                            <div className="comment mt-4 text-justify float-left">
+                                                                <span className="commentp">{bugsC.postedBy}</span>
+                                                                <span>{"- " + bugsC.postedAt[1] + "/" + bugsC.postedAt[2] + "/" + bugsC.postedAt[0]}</span>
+                                                                <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">{<MdDeleteForever/>}</button>}</span>
+                                                                <br />
+                                                                <div className="commentd"><span >{bugsC.text} </span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )) : []}
+                                            </div>
+                                            <div className="cardComment">
+                                                <div class="input-group mb-3">
+                                                    <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
+                                                    <div className="input-group-append">
+                                                        <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </VerticalTimelineElement>
                                     )) : []}
                             </VerticalTimeline>}
@@ -524,20 +654,25 @@ const Dashboard = () => {
                             <input value={title} onChange={(e) => setTitle(e.target.value)} className="input-group-text" placeholder="Title"></input>
                         </div>
                         <div className="input-group mb-3 justify-content-center">
-                            <input value={desc} onChange={(e) => setDesc(e.target.value)} className="input-group-text" placeholder="Description"></input>
+                            <textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="input-group-text" type="textbox" placeholder="Description"></textarea>
                         </div>
+                        { login.roles === "admin" &&
                         <div className="input-group mb-3 justify-content-center">
                             <select value={asignTo} onChange={(e) => setAsignTo(e.target.value)} id="state" className="input-group-text">
                                 <option>Ali Kachef </option>
                                 <option>Robert Warren </option>
                             </select>
                         </div>
+                        }
+                        { login.roles === "admin" &&
                         <div className="input-group mb-3 justify-content-center">
                             <select value={status} onChange={(e) => setStatus(e.target.value)} id="state" className="input-group-text">
                                 <option>Open</option>
                                 <option>Close</option>
                             </select>
                         </div>
+                        }
+                        { login.roles === "admin" &&
                         <div className="input-group mb-3 justify-content-center">
                             <select value={urgency} onChange={(e) => setUrgency(e.target.value)} id="state" className="input-group-text">
                                 <option>Urgent</option>
@@ -545,13 +680,39 @@ const Dashboard = () => {
                                 <option>Modrate</option>
                                 <option>low</option>
                             </select>
-                        </div>
+                        </div>}
 
                     </Modal.Body>
                     <Modal.Footer>
                         <button disabled={!buttonHandle} className="btn btn-success" onClick={(e) => addbug(e)} >Add</button>
                         <button disabled={buttonHandle} className="btn btn-primary" onClick={(e) => updateCourse(e)}>Update</button>
                         <button className="btn btn-danger" onClick={() => closeModal()} >close</button>
+                    </Modal.Footer>
+                </Modal>
+     <Modal show={modalUser} onHide={() => handleModalUser()}>
+                    <Modal.Body>
+                        <div className="input-group mb-3 justify-content-center ">
+                            <input className="input-group-text " disabled={true} value={"ID: " + IDuser}></input>
+                        </div>
+                        <div className="input-group mb-3 justify-content-center">
+                            <input value={name} onChange={(e) => setName(e.target.value)} className="input-group-text" placeholder="Name"></input>
+                        </div>
+                        <div className="input-group mb-3 justify-content-center">
+                            <input value={email} onChange={(e) => setEmail(e.target.value)} className="input-group-text" placeholder="Email"></input>
+                        </div>
+                        { login.roles === "admin" &&
+                        <div className="input-group mb-3 justify-content-center">
+                            <select value={role} onChange={(e) => setRole(e.target.value)} id="state" className="input-group-text">
+                                <option>user</option>
+                                <option>admin</option>
+                            </select>
+                        </div>
+                        }
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button disabled={buttonHandle} className="btn btn-primary" onClick={(e) => updateUser(e)}>Update</button>
+                        <button className="btn btn-danger" onClick={() => handleModalUser()} >close</button>
                     </Modal.Footer>
                 </Modal>
 

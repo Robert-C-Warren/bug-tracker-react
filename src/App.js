@@ -3,6 +3,7 @@ import LogInPage from './components/login/LogInPage'
 import SignUpPage from './components/login/SignUpPage';
 import Dashboard from './components/user-page/Dashboard'
 import AdminUserView from './components/user-page/AdminUserView'
+
 import Home from './components/home/Home';
 import {
   BrowserRouter,
