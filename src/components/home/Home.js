@@ -44,7 +44,7 @@ const Home = () => {
                     <div className="row">
                         <div className="col-md-4">
                             <h2>Report</h2>
-                            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                            <p>Build product roadmaps. Let users vote on feature requests with your very own embeddable product roadmap. Discover what your users really want. </p>
                         </div>
                         <div className="col-md-4">
                             <h2>Heading</h2>
