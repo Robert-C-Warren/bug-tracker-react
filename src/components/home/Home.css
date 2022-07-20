@@ -1,0 +1,46 @@
+.homecontainer {
+    display: block;
+    background-repeat: no-repeat;
+    background-image: url("./Assets/img2.jpg");
+
+}
+
+
+.imgbanner {
+    box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+    max-width: 500px;
+}
+
+.banner {
+    display: block;
+}
+
+
+.banner-container {
+    display: flex;
+}
+
+.main-body {
+    padding-top: 3.5rem;
+    background-image: url("./Assets/img4.webp");
+    padding-bottom: 3.5rem;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    animation: hueRotate 15s ease infinite;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+}
+
+
+@keyframes hueRotate {
+    0% {
+        filter: hue-rotate(0deg) grayscale(10%);
+    }
+
+    50% {
+        filter: hue-rotate(100deg) grayscale(10%);
+    }
+
+    100% {
+        filter: hue-rotate(0deg) grayscale(10%);
+    }
+}
