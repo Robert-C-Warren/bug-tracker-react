@@ -109,6 +109,19 @@ body{
     background-color: #bababa;
 }
 
+.switchView-btn {
+    color: black;
+    background-color: #ffffff;
+    border: none;
+    transition: transform 0.3s;
+}
+
+.switchView-btn:hover {
+    background-color: #bababa;
+    border: none;
+    transform: scale(0.95);
+}
+
 @keyframes gradientBG {
 	0% {
 		background-position: 0% 50%;

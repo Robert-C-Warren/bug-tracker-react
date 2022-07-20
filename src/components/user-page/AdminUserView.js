@@ -118,7 +118,7 @@ const Dashboard = () => {
     }
 
     const switchView = () => {
-        window.location.href = '/userview'
+        window.location.href = '/dashboard'
     }
 
     const editCourse = (Id) => {
@@ -317,23 +317,10 @@ const Dashboard = () => {
 
 
 
-                            {login.roles === "admin" && <h2>Un-Published</h2>}
+                            {/* {login.roles === "admin" && <h2>Un-Published</h2>} */}
 
-                            {login.roles === "admin" &&
+                            {/* {login.roles === "admin" &&
                                 <table className="table table-striped table-dark">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Title</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Asigned to</th>
-                                            <th scope="col">status</th>
-                                            <th scope="col">Priority</th>
-                                            {login.roles === "admin" && <th></th>}
-                                            {login.roles === "admin" && <th></th>}
-                                            {login.roles === "admin" && <th></th>}
-                                        </tr>
-                                    </thead>
                                     <tbody>
                                         {Array.isArray(bugs) ? bugs.filter(n => n.published !== true)
                                             .map((bugs) => (
@@ -363,111 +350,11 @@ const Dashboard = () => {
                                             )) : []}
                                     </tbody>
                                 </table>
-                            }
+                            } */}
 
-                            
-                            {login.roles === "admin" && <h2>Published</h2>}
-                            {login.roles === "admin" &&
-
-                                <table className="table  table-striped table-dark">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Title</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Asigned to</th>
-                                            <th scope="col">status</th>
-                                            <th scope="col">Priority</th>
-                                            {login.roles === "admin" && <th></th>}
-                                            {login.roles === "admin" && <th></th>}
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
-                                            .map((bugs) => (
-                                                <tr key={bugs.bugId}>
-                                                    <td>{bugs.bugId}</td>
-                                                    <td >{bugs.bugName}</td>
-                                                    <td >{bugs.bugDesc}</td>
-                                                    <td>{bugs.assignedTo}</td>
-                                                    <td >{bugs.bugStatus}</td>
-                                                    <td >{bugs.bugUrgency}</td>
-                                                    {login.roles === "admin" &&
-                                                        <td>
-                                                            <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
-                                                        </td>
-                                                    }
-                                                    {login.roles === "admin" &&
-                                                        <td>
-                                                            <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
-                                                        </td>
-                                                    }
-
-                                                </tr>
-                                            )) : []}
-                                    </tbody>
-                                </table>
-                            }
-
-                            
-
-                            {login.roles === "admin" && <h2>Closed</h2>}
-                            {login.roles === "admin" &&
-                                <table className="table table-striped table-dark">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Title</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Asigned to</th>
-                                            <th scope="col">status</th>
-                                            {login.roles === "admin" && <th></th>}
-                                            {login.roles === "admin" && <th></th>}
-                                            {login.roles === "admin" && <th></th>}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")
-                                            .map((bugs) => (
-                                                <tr key={bugs.bugId}>
-                                                    <td>{bugs.bugId}</td>
-                                                    <td >{bugs.bugName}</td>
-                                                    <td >{bugs.bugDesc}</td>
-                                                    <td>{bugs.assignedTo}</td>
-                                                    <td >{bugs.bugStatus}</td>
-                                                    <td >{bugs.bugUrgency}</td>
-                                                    {login.roles === "admin" &&
-                                                        <td>
-                                                            <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
-                                                        </td>
-                                                    }
-                                                    {login.roles === "admin" &&
-                                                        <td>
-                                                            <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
-                                                        </td>
-                                                    }
-
-                                                </tr>
-                                            )) : []}
-                                    </tbody>
-                                </table>
-                            }
+                           
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
-                        
-                            
-                            {/* Button to switch to user view */}
-                            {login.roles === "admin" &&
-                            <table className="switchView-table" align="center">
-                                <button className="m-2 btn switchView-btn" onClick={() => switchView()}>User View</button>
-                            </table>
-                            }   
-                        </div>
-
-                    </div>
-                </div>
-
-                {login.roles === "user" && 
+                            {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
                             <VerticalTimeline>
                                 {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
                                     .map((bugs) => (
@@ -511,10 +398,18 @@ const Dashboard = () => {
                                             <p>{bugs.bugDesc}</p>
                                             <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
                                         </VerticalTimelineElement>
-                                    )) : []}
-                            </VerticalTimeline>}
+                                    )) : []} 
+                            </VerticalTimeline>
 
-                            
+                            {/* Button to switch to user view */}
+                            <table className="switchView-table" align="center">
+                                <button className="m-2 btn switchView-btn" onClick={() => switchView()}>Admin View</button>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
                 <Modal show={modal} onHide={() => handleModal(false)}>
                     <Modal.Body>
                         <div className="input-group mb-3 justify-content-center ">
@@ -554,7 +449,6 @@ const Dashboard = () => {
                         <button className="btn btn-danger" onClick={() => closeModal()} >close</button>
                     </Modal.Footer>
                 </Modal>
-
             </div>
         </>
     )
