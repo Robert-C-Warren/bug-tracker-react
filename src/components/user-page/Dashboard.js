@@ -132,6 +132,18 @@ const Dashboard = () => {
         setModal(true)
     }
 
+
+    //Function to logout
+    const logout = () => {
+        localStorage.clear();
+        window.location.href = '/login'
+    }
+
+    const switchView = () => {
+        window.location.href = '/userview'
+    }
+
+
     const editCourse = (Id) => {
         setButton(false)
         let yourConfig = {
@@ -424,6 +436,7 @@ const Dashboard = () => {
                                 </table>
                             }
 
+                            
                             {login.roles === "admin" && <h2>Published</h2>}
                             {login.roles === "admin" &&
                                 <table className="table  table-striped table-dark">
@@ -466,6 +479,8 @@ const Dashboard = () => {
                                     </tbody>
                                 </table>
                             }
+
+                            
 
                             {login.roles === "admin" && <h2>Closed</h2>}
                             {login.roles === "admin" &&
@@ -545,7 +560,20 @@ const Dashboard = () => {
                             </table>}
 
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
-                            {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
+                        
+                            
+                            {/* Button to switch to user view */}
+                            {login.roles === "admin" &&
+                            <table className="switchView-table" align="center">
+                                <button className="m-2 btn switchView-btn" onClick={() => switchView()}>User View</button>
+                            </table>
+                            }   
+                        </div>
+
+                    </div>
+                </div>
+
+                {login.roles === "user" && 
                             <VerticalTimeline>
                                 {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
                                     .map((bugs) => (
@@ -614,11 +642,9 @@ const Dashboard = () => {
 
                                         </VerticalTimelineElement>
                                     )) : []}
-                            </VerticalTimeline>
-                        </div>
+                            </VerticalTimeline>}
 
-                    </div>
-                </div>
+                            
                 <Modal show={modal} onHide={() => handleModal(false)}>
                     <Modal.Body>
                         <div className="input-group mb-3 justify-content-center ">
@@ -663,7 +689,7 @@ const Dashboard = () => {
                         <button className="btn btn-danger" onClick={() => closeModal()} >close</button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={modalUser} onHide={() => handleModalUser()}>
+     <Modal show={modalUser} onHide={() => handleModalUser()}>
                     <Modal.Body>
                         <div className="input-group mb-3 justify-content-center ">
                             <input className="input-group-text " disabled={true} value={"ID: " + IDuser}></input>
@@ -689,6 +715,7 @@ const Dashboard = () => {
                         <button className="btn btn-danger" onClick={() => handleModalUser()} >close</button>
                     </Modal.Footer>
                 </Modal>
+
             </div>
         </>
     )
