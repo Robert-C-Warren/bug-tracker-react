@@ -15,6 +15,7 @@ const Dashboard = () => {
         roles: ""
     });
     const [modal, setModal] = useState();
+    const [modalUser, setModalUser] = useState(false);
     const [buttonHandle, setButton] = useState();
     const [token, setToken] = useState();
     const [isLoading, setLoading] = useState(true)
@@ -34,8 +35,13 @@ const Dashboard = () => {
     const [status, setStatus] = useState("");
     const [desc, setDesc] = useState("");
     const [urgency, setUrgency] = useState("Urgent");
-
+    const [users, setUsers] = useState();
     const [comments, setComments] = useState();
+
+    const[IDuser, setIDuser] = useState();
+    const[name, setName] = useState();
+    const[email, setEmail] = useState();
+    const[role, setRole] = useState();
 
     const closeModal = () => {
         setId(bugs[bugs.length - 1].bugId + 1)
@@ -64,6 +70,18 @@ const Dashboard = () => {
         getBugs()
     }
 
+    const getAllUsers = async () => {
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + getToken()
+            }
+        }
+        await axios.get('http://localhost:8080/users', yourConfig)
+        .then(response => setUsers(response.data))
+
+        
+    }
+
     const getSetToken = () => {
         
         let ttk = localStorage.getItem('token')
@@ -73,10 +91,13 @@ const Dashboard = () => {
 
     useEffect(() => {
         getSetToken();
+        getAllUsers();
+
         setTimeout(function () {
             getUserInfo()
         }, 5000)
         setLoading(false)
+        console.log(users);
     }, [])
 
     const logout = () => {
@@ -93,13 +114,17 @@ const Dashboard = () => {
         }
         await axios.get("http://localhost:8080/bugs", yourConfig)
             .then(response => setBugs(response.data))
-
-
+            console.log(getToken())
+            console.log(bugs);
     }
 
 
     const handleModal = () => {
         setModal(false)
+    }
+
+    const handleModalUser = () => {
+        setModalUser(!modalUser)
     }
 
     const addEditHandle = (e) => {
@@ -123,6 +148,21 @@ const Dashboard = () => {
                 setUrgency(result.data.bugUrgency)))
 
         setModal(true)
+    }
+    const editUser = (Id) => {
+        setButton(false)
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        }
+        axios.get("http://localhost:8080/user/" + Id, yourConfig)
+            .then(result => (setIDuser(result.data.userId),
+                setName(result.data.name),
+                setEmail(result.data.email),
+                setRole(result.data.role)))
+
+        setModalUser(true);
     }
 
     const updateCourse = async (e) => {
@@ -152,6 +192,26 @@ const Dashboard = () => {
 
     }
 
+    const updateUser = async (e) => {
+        e.preventDefault();
+        const user = {
+            "userId": IDuser,
+            "name": name,
+            "email": email,
+            "role": role
+        }
+
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            },
+
+        };
+        await axios.put("http://localhost:8080/users", user, yourConfig)
+        handleModalUser
+
+    }
+
     const deleteCourse = (id) => {
         let yourConfig = {
             headers: {
@@ -164,6 +224,19 @@ const Dashboard = () => {
             getBugs()
         }, 250)
 
+    }
+
+    const deleteUser = (id) => {
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        }
+        axios.delete("http://localhost:8080/user/" + id, yourConfig)
+        setModalUser(false)
+        setTimeout(function () {
+            getAllUsers()
+        }, 250)
     }
 
     const addbug = (e) => {
@@ -435,6 +508,42 @@ const Dashboard = () => {
                                     </tbody>
                                 </table>
                             }
+
+                            {login.roles === "admin" && <h2>User List</h2>}
+                            {login.roles === "admin" && 
+                            <table className="table table-striped table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Role</th>
+                                        {login.roles === "admin" && <th></th>}
+                                        {login.roles === "admin" && <th></th>} 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Array.isArray(users) ? users.map((user) => (
+                                        <tr key={user.userId}>
+                                            <td>{user.userId}</td>
+                                            <td>{user.email}</td>
+                                            <td>{user.name}</td>
+                                            <td>{user.role}</td>
+                                            {login.roles === "admin" &&
+                                                <td>
+                                                    <button onClick={() => editUser(user.userId)} className="btn btn-primary btn-sm">Edit</button>
+                                                </td>
+                                            }
+                                            {login.roles === "admin" &&
+                                                <td>
+                                                    <button onClick={() => deleteUser(user.userId)} className="btn btn-danger btn-sm">Delete</button>
+                                                </td>
+                                            }
+                                        </tr>
+                                    )) : []}
+                                </tbody>
+                            </table>}
+
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
                             {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
                             <VerticalTimeline>
@@ -552,6 +661,32 @@ const Dashboard = () => {
                         <button disabled={!buttonHandle} className="btn btn-success" onClick={(e) => addbug(e)} >Add</button>
                         <button disabled={buttonHandle} className="btn btn-primary" onClick={(e) => updateCourse(e)}>Update</button>
                         <button className="btn btn-danger" onClick={() => closeModal()} >close</button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={modalUser} onHide={() => handleModalUser()}>
+                    <Modal.Body>
+                        <div className="input-group mb-3 justify-content-center ">
+                            <input className="input-group-text " disabled={true} value={"ID: " + IDuser}></input>
+                        </div>
+                        <div className="input-group mb-3 justify-content-center">
+                            <input value={name} onChange={(e) => setName(e.target.value)} className="input-group-text" placeholder="Name"></input>
+                        </div>
+                        <div className="input-group mb-3 justify-content-center">
+                            <input value={email} onChange={(e) => setEmail(e.target.value)} className="input-group-text" placeholder="Email"></input>
+                        </div>
+                        { login.roles === "admin" &&
+                        <div className="input-group mb-3 justify-content-center">
+                            <select value={role} onChange={(e) => setRole(e.target.value)} id="state" className="input-group-text">
+                                <option>user</option>
+                                <option>admin</option>
+                            </select>
+                        </div>
+                        }
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button disabled={buttonHandle} className="btn btn-primary" onClick={(e) => updateUser(e)}>Update</button>
+                        <button className="btn btn-danger" onClick={() => handleModalUser()} >close</button>
                     </Modal.Footer>
                 </Modal>
             </div>
