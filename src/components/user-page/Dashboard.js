@@ -60,18 +60,7 @@ const Dashboard = () => {
 
         await axios.get("http://localhost:8080/auth/userinfo", yourConfig)
             .then(response => setLogin(response.data))
-        {/*    
-        .catch(err => {
-                if (!err.ok) {
-                    setError(err.message)
-                    setVisiable(true)
-                    setTimeout(function () {
-                        setVisiable(false);
-                        setError('');
-                    }, 5000)
-                }
-            })
-        */}
+      
         getBugs()
     }
 
