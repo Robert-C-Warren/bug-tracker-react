@@ -50,7 +50,7 @@ const Home = () => {
 
                         </div>
                         <div className="col-md-4">
-                            <h2>Handeling</h2>
+                            <h2>Handel</h2>
                             <p>Customized interface. As Admin you have all the tools to edit and manage requests. User view aloows you to see exactly what your user see. display what you are working on and show off what issues were resolved </p>
                         </div>
                         <div className="col-md-4">
