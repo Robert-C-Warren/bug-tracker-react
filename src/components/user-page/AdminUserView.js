@@ -114,7 +114,7 @@ const Dashboard = () => {
     //Function to logout
     const logout = () => {
         localStorage.clear();
-        window.location.href = '/login'
+        window.location.href = '/'
     }
 
     const switchView = () => {
@@ -135,7 +135,6 @@ const Dashboard = () => {
                 setAsignTo(result.data.assignedTo),
                 setStatus(result.data.bugStatus),
                 setUrgency(result.data.bugUrgency)))
-
         setModal(true)
     }
 
@@ -306,53 +305,19 @@ const Dashboard = () => {
 
                     <div className="navAdd">
                         <h4 className="text-white">{login.name}</h4>
-
                         <button className="m-2 btn btn-primary" onClick={(e) => addEditHandle(e)}>Add</button>
-                        <button className="m-2 btn btn-logout" onClick={() => logout()}>Logout</button>
+                         {/* Button to switch to user view */}
+                         {login.roles === "admin" &&
+                            <table className="switchView-table" align="center">
+                                <button className="m-2 btn btn-light" onClick={() => switchView()}>User View</button>
+                            </table>
+                            }
+                        <button className="m-2 btn btn-outline-light" onClick={() => logout()}>Logout</button>
                     </div>
                 </nav>
                 <div className="bugs-container">
                     <div className="bugs-cards">
-                        <div className="container m-5 pb-5">
-
-
-
-                            {/* {login.roles === "admin" && <h2>Un-Published</h2>} */}
-
-                            {/* {login.roles === "admin" &&
-                                <table className="table table-striped table-dark">
-                                    <tbody>
-                                        {Array.isArray(bugs) ? bugs.filter(n => n.published !== true)
-                                            .map((bugs) => (
-                                                <tr key={bugs.bugId}>
-                                                    <td>{bugs.bugId}</td>
-                                                    <td >{bugs.bugName}</td>
-                                                    <td >{bugs.bugDesc}</td>
-                                                    <td>{bugs.assignedTo}</td>
-                                                    <td >{bugs.bugStatus}</td>
-                                                    <td >{bugs.bugUrgency}</td>
-                                                    {login.roles === "admin" &&
-                                                        <td>
-                                                            <button onClick={() => editCourse(bugs.bugId)} className="btn btn-primary btn-sm">Edit</button>
-                                                        </td>
-                                                    }
-                                                    {login.roles === "admin" &&
-                                                        <td>
-                                                            <button onClick={() => deleteCourse(bugs.bugId)} className="btn btn-danger btn-sm">Delete</button>
-                                                        </td>
-                                                    }
-                                                    {login.roles === "admin" &&
-                                                        <td>
-                                                            <button onClick={() => publishBug(bugs)} className="btn btn-success btn-sm">publish</button>
-                                                        </td>
-                                                    }
-                                                </tr>
-                                            )) : []}
-                                    </tbody>
-                                </table>
-                            } */}
-
-                           
+                        <div className="container m-5 pb-5">                           
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
                             {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
                             <VerticalTimeline>
@@ -425,6 +390,7 @@ const Dashboard = () => {
                             <select value={asignTo} onChange={(e) => setAsignTo(e.target.value)} id="state" className="input-group-text">
                                 <option>Ali Kachef </option>
                                 <option>Robert Warren </option>
+                                <option>Noah</option>
                             </select>
                         </div>
                         <div className="input-group mb-3 justify-content-center">

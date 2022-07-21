@@ -37,7 +37,7 @@
     }
 
     50% {
-        filter: hue-rotate(100deg) grayscale(10%);
+        filter: hue-rotate(80deg) grayscale(10%);
     }
 
     100% {
