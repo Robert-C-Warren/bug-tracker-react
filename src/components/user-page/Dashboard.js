@@ -547,83 +547,78 @@ const Dashboard = () => {
                                     </tbody>
                                 </table>}
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
+                            {login.roles === "user" &&
+                                <VerticalTimeline>
+                                    {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
+                                        .map((bugs) => (
+                                            <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'red', color: '#fff' }} icon={<BsFillBugFill />} >
+                                                <div className="vCard">
+                                                    <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
+                                                    <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
+                                                    <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
+                                                    <p>{bugs.bugDesc}</p>
+                                                    <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                                    {Array.isArray(bugs.bugComments) ? bugs.bugComments.map((bugsC) => (
+                                                        <div className="commentContainer">
+                                                            <div className="commentSection">
+                                                                <div className="comment mt-4 text-justify float-left">
+                                                                    <span className="commentp">{bugsC.postedBy}</span>
+                                                                    <span>{"- " + bugsC.postedAt[1] + "/" + bugsC.postedAt[2] + "/" + bugsC.postedAt[0]}</span>
+                                                                    <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">{<MdDeleteForever />}</button>}</span>
+                                                                    <br />
+                                                                    <div className="commentd"><span >{bugsC.text} </span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )) : []}
+                                                </div>
+                                                <div className="cardComment">
+                                                    <div class="input-group mb-3">
+                                                        <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
+                                                        <div className="input-group-append">
+                                                            <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </VerticalTimelineElement>
+                                        )) : []}
+                                    {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")
+                                        .map((bugs) => (
+                                            <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'green', color: '#fff' }} icon={<TbBugOff />} >
+                                                <div className="vCard">
+                                                    <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
+                                                    <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
+                                                    <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
+                                                    <p>{bugs.bugDesc}</p>
+                                                    <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
+                                                    {Array.isArray(bugs.bugComments) ? bugs.bugComments.map((bugsC) => (
+                                                        <div className="commentContainer">
+                                                            <div className="commentSection">
+                                                                <div className="comment mt-4 text-justify float-left">
+                                                                    <span className="commentp">{bugsC.postedBy}</span>
+                                                                    <span>{"- " + bugsC.postedAt[1] + "/" + bugsC.postedAt[2] + "/" + bugsC.postedAt[0]}</span>
+                                                                    <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">{<MdDeleteForever />}</button>}</span>
+                                                                    <br />
+                                                                    <div className="commentd"><span >{bugsC.text} </span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )) : []}
+                                                </div>
+                                                <div className="cardComment">
+                                                    <div class="input-group mb-3">
+                                                        <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
+                                                        <div className="input-group-append">
+                                                            <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </VerticalTimelineElement>
+                                        )) : []}
+                                </VerticalTimeline>}
                         </div>
-
                     </div>
                 </div>
-
-                {login.roles === "user" &&
-                    <VerticalTimeline>
-                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
-                            .map((bugs) => (
-                                <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'red', color: '#fff' }} icon={<BsFillBugFill />} >
-                                    <div className="vCard">
-                                        <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
-                                        <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
-                                        <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
-                                        <p>{bugs.bugDesc}</p>
-                                        <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
-                                        {Array.isArray(bugs.bugComments) ? bugs.bugComments.map((bugsC) => (
-                                            <div className="commentContainer">
-                                                <div className="commentSection">
-                                                    <div className="comment mt-4 text-justify float-left">
-                                                        <span className="commentp">{bugsC.postedBy}</span>
-                                                        <span>{"- " + bugsC.postedAt[1] + "/" + bugsC.postedAt[2] + "/" + bugsC.postedAt[0]}</span>
-                                                        <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">{<MdDeleteForever />}</button>}</span>
-                                                        <br />
-                                                        <div className="commentd"><span >{bugsC.text} </span></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )) : []}
-                                    </div>
-                                    <div className="cardComment">
-                                        <div class="input-group mb-3">
-                                            <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
-                                            <div className="input-group-append">
-                                                <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </VerticalTimelineElement>
-                            )) : []}
-                        {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")
-                            .map((bugs) => (
-                                <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'green', color: '#fff' }} icon={<TbBugOff />} >
-                                    <div className="vCard">
-                                        <h6>Status: <span className={renderSwitch(bugs.bugStatus)} >{bugs.bugStatus}</span></h6>
-                                        <h3 className="vertical-timeline-element-title">{bugs.bugName}</h3>
-                                        <h5 className="vertical-timeline-element-subtitle">Assigned To: {bugs.assignedTo}</h5>
-                                        <p>{bugs.bugDesc}</p>
-                                        <p>Priority: <span className={renderSwitch(bugs.bugUrgency)} >{bugs.bugUrgency}</span></p>
-                                        {Array.isArray(bugs.bugComments) ? bugs.bugComments.map((bugsC) => (
-                                            <div className="commentContainer">
-                                                <div className="commentSection">
-                                                    <div className="comment mt-4 text-justify float-left">
-                                                        <span className="commentp">{bugsC.postedBy}</span>
-                                                        <span>{"- " + bugsC.postedAt[1] + "/" + bugsC.postedAt[2] + "/" + bugsC.postedAt[0]}</span>
-                                                        <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">{<MdDeleteForever />}</button>}</span>
-                                                        <br />
-                                                        <div className="commentd"><span >{bugsC.text} </span></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )) : []}
-                                    </div>
-                                    <div className="cardComment">
-                                        <div class="input-group mb-3">
-                                            <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
-                                            <div className="input-group-append">
-                                                <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </VerticalTimelineElement>
-                            )) : []}
-                    </VerticalTimeline>}
-
-
                 <Modal show={modal} onHide={() => handleModal(false)}>
                     <Modal.Body>
                         <div className="input-group mb-3 justify-content-center ">
