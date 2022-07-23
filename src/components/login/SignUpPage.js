@@ -56,7 +56,7 @@ function SignUpPage() {
                         setName("")
                         setPassword("")
                         setTimeout(function () {
-                            setSuccessIsVisable(false);
+                        setSuccessIsVisable(false);
                         }, 5000)
                     }
 
