@@ -44,19 +44,15 @@ const Home = () => {
                     <div className="row">
                         <div className="col-md-4">
                             <h2>Report</h2>
-
-                            <p>Build product roadmaps. Let users vote on feature requests with your very own embeddable product roadmap. Discover what your users really want. </p>
-
-                            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-
+                            <p>Build product roadmaps. Let users Comment on feature requests with your very own embeddable product roadmap. Discover what your users really want. </p>
                         </div>
                         <div className="col-md-4">
-                            <h2>Heading</h2>
-                            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                            <h2>Handel</h2>
+                            <p>Customized interface. As Admin you have all the tools to edit and manage requests. User view aloows you to see exactly what your user see. display what you are working on and show off what issues were resolved </p>
                         </div>
                         <div className="col-md-4">
-                            <h2>Heading</h2>
-                            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                            <h2>Manage</h2>
+                            <p>Users reports are not always acurate or vaiable. with our platform users cant post or edit your roadmap. each inquery or report the user submits, it will be directly sent to you as unpublised and you have the otion to edit before publshing</p>
                         </div>
                     </div>
                     <hr></hr>

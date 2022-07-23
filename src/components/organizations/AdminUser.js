@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import './Dashboard.css'
+import '../user-page/Dashboard.css'
 import { Modal } from 'react-bootstrap';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
@@ -8,11 +8,13 @@ import { BsFillBugFill } from 'react-icons/bs';
 import { TbBugOff } from 'react-icons/tb';
 import { getToken } from '../api/authenticationService'
 import icon from '../../components/icon-bug-15.jpg'
+import { getOrganId } from '../api/authenticationService'
 
 const Dashboard = () => {
     const [login, setLogin] = useState({
         roles: ""
     });
+    const [organId, setOrganId] = useState(getOrganId());
     const [modal, setModal] = useState();
     const [buttonHandle, setButton] = useState();
     const [token, setToken] = useState();
@@ -95,7 +97,7 @@ const Dashboard = () => {
                 Authorization: "Bearer " + getToken()
             }
         }
-        await axios.get("http://localhost:8080/bugs", yourConfig)
+        await axios.get("http://localhost:8080/organ/bugs/" + organId, yourConfig)
             .then(response => setBugs(response.data))
 
 
@@ -118,7 +120,7 @@ const Dashboard = () => {
     }
 
     const switchView = () => {
-        window.location.href = '/dashboard'
+        window.location.href = '/organization'
     }
 
     const editCourse = (Id) => {
@@ -179,8 +181,8 @@ const Dashboard = () => {
 
     }
 
-    const addbug = (e) => {
-        e.preventDefault();
+    const addbug = async (e) => {
+        
         const bug = {
             "bugId": ID,
             "bugStatus": status,
@@ -197,13 +199,16 @@ const Dashboard = () => {
         }
         axios.post("http://localhost:8080/bug", bug, yourConfig)
         axios.get("http://localhost:8080/sendMail/" + login.email, yourConfig)
+        
 
         setModal(false)
+        closeModal()
         setTimeout(function () {
             getBugs()
+            closeModal()
         }, 250)
 
-
+        
     }
 
     const renderSwitch = (param) => {

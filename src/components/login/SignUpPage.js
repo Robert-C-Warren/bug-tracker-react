@@ -9,18 +9,18 @@ function SignUpPage() {
     const [sucessIsVisable, setSuccessIsVisable] = useState(false);
     const [error, setError] = useState('');
     const [visiable, setVisiable] = useState(false);
-
+    const [load, setLoad] = useState(false);
 
     const [email, setEmail] = useState();
     const [name, setName] = useState();
     const [password, setPassword] = useState();
     const [role] = useState("user");
 
-    const getToken = (e) => {
+    const getToken = async (e) => {
         e.preventDefault();
         const loginCredential = { email, name, password, role }
 
-        if (email === undefined || name === undefined || password === undefined ) {
+        if (email === undefined || name === undefined || password === undefined) {
             console.log("true")
             setError("All feild are required")
             setVisiable(true)
@@ -28,7 +28,7 @@ function SignUpPage() {
                 setVisiable(false);
             }, 5000)
         }
-        else if(email !== null && !email.includes("@")){
+        else if (email !== null && !email.includes("@")) {
             console.log("true")
             setError("please enter a valid email")
             setVisiable(true)
@@ -36,35 +36,42 @@ function SignUpPage() {
                 setVisiable(false);
             }, 5000)
         }
-        else if( password.length < 8){
+        else if (password.length < 8) {
             setError("password must be at least 8 charachters")
             setVisiable(true)
+           
             setTimeout(function () {
                 setVisiable(false);
             }, 5000)
         }
         else {
-            axios.post("http://localhost:8080/userregister", loginCredential)
+            await axios.get("http://localhost:8080/successSignUp/" + email)
+
+            await axios.post("http://localhost:8080/userregister", loginCredential)
                 .then((response) => {
                     if (!response.ok) {
                         setSuccess("User Created Sucessfly")
                         setSuccessIsVisable(true)
+                        setEmail("")
+                        setName("")
+                        setPassword("")
                         setTimeout(function () {
-                            setSuccessIsVisable(false);
+                        setSuccessIsVisable(false);
                         }, 5000)
                     }
 
                 })
         }
-        {/*  .catch(err => 
-            setError("User sigup failed"),
-            setVisiable(true),
-            setTimeout(function () {
-                setVisiable(false);
-            }, 5000)
-        )*/}
 
+    }
 
+    const loadButton = () => {
+        if(load) {
+            return "spinner-border text-primary";
+        }
+        else{
+            return "btn btn-primary";
+        }
     }
 
     return (
@@ -83,7 +90,10 @@ function SignUpPage() {
                         <div className="sigintextbox">
                             <input className="form-control" onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password"></input>
                         </div>
-                        <button onClick={(e) => getToken(e)} herf="/login" className="btn btn-primary">SignUp</button>
+                        <button disabled={load} onClick={(e) => {
+                            setLoad(true);
+                            getToken(e).then(() => setLoad(false))
+                        }} herf="/login" className={load ?  "spinner-grow text-primary" : "btn btn-primary"}>{load ?  "" : "SignUp"}</button>
                         <p className="message">Registered?
                             <a className="fullpage-a" href="/login"> Login</a>
                         </p>

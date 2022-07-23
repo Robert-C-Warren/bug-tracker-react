@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import './Dashboard.css'
+import '../user-page/Dashboard.css'
 import { Modal } from 'react-bootstrap';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
@@ -9,11 +9,14 @@ import { TbBugOff } from 'react-icons/tb';
 import { getToken } from '../api/authenticationService'
 import { MdDeleteForever } from "react-icons/md"
 import icon from '../../components/icon-bug-15.jpg'
+import { getOrganId } from '../api/authenticationService'
 
-const Dashboard = () => {
+
+const OrganDash = () => {
     const [login, setLogin] = useState({
         roles: ""
     });
+    const [organId, setOrganId] = useState(getOrganId());
     const [modal, setModal] = useState();
     const [modalUser, setModalUser] = useState(false);
     const [buttonHandle, setButton] = useState();
@@ -57,6 +60,7 @@ const Dashboard = () => {
 
     const getUserInfo = async () => {
         setToken(getToken())
+        setOrganId(getOrganId())
 
         let yourConfig = {
             headers: {
@@ -83,13 +87,20 @@ const Dashboard = () => {
     }
 
     const getSetToken = () => {
-
         let ttk = localStorage.getItem('token')
         setToken(ttk)
         getUserInfo();
     }
 
+    const getSetOrgan = () => {
+        let organId = localStorage.getItem("CurrentOrganization")
+        setOrganId(organId)
+        getUserInfo();
+
+    }
+
     useEffect(() => {
+        getSetOrgan();
         getSetToken();
         getAllUsers();
 
@@ -97,7 +108,6 @@ const Dashboard = () => {
             getUserInfo()
         }, 5000)
         setLoading(false)
-        console.log(users);
     }, [])
 
     const logout = () => {
@@ -112,10 +122,8 @@ const Dashboard = () => {
                 Authorization: "Bearer " + getToken()
             }
         }
-        await axios.get("http://localhost:8080/bugs", yourConfig)
+        await axios.get("http://localhost:8080/organ/bugs/" + organId)
             .then(response => setBugs(response.data))
-        console.log(getToken())
-        console.log(bugs);
     }
 
 
@@ -261,7 +269,7 @@ const Dashboard = () => {
                 Authorization: "Bearer " + token
             }
         }
-        axios.post("http://localhost:8080/bug", bug, yourConfig)
+        axios.post("http://localhost:8080/organ/bug/" + organId, bug, yourConfig)
         axios.get("http://localhost:8080/sendMail/" + login.email, yourConfig)
 
         setModal(false)
@@ -376,6 +384,7 @@ const Dashboard = () => {
                             </table>
                         }
                         <button className="m-2 btn btn-outline-light" onClick={() => logout()}>Logout</button>
+
                     </div>
                 </nav>
                 <div className="bugs-container">
@@ -696,4 +705,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default OrganDash
