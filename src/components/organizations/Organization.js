@@ -118,6 +118,19 @@ const Organization = () => {
         }, 250)
     }
 
+    const organDelete = (id) => {
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + getToken()
+            }
+        }
+         axios.delete("http://localhost:8080/organ/" + id,  yourConfig)
+        setTimeout(function () {
+            getOrganizations()
+            closeModal()
+        }, 250)
+    }
+
 
 
     return (
@@ -149,7 +162,8 @@ const Organization = () => {
                                                     <Card.Title>{organs.organizationName}</Card.Title>
                                                     <Card.Text>{organs.organizationDescription}</Card.Text>
                                                     <button className=" btn btn-primary" onClick={() => organDash(organs.organizationId)}>Go</button>
-                                                    {login.roles==="admin" && <button className="m-1 btn btn-primary" onClick={() => organUpdate(organs.organizationId, organs.imageUrl, organs.organizationName, organs.organizationDescription, organs.organizationBug)}>Update</button> }
+                                                    {login.roles === "admin" && <button className="m-1 btn btn-primary" onClick={() => organUpdate(organs.organizationId, organs.imageUrl, organs.organizationName, organs.organizationDescription, organs.organizationBug)}>Update</button>}
+                                                    {login.roles === "admin" && <button className="btn btn-danger" onClick={() => organDelete(organs.organizationId)}>Delete</button>}
                                                 </Card.Body>
                                             </Card>
                                         </div>

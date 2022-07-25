@@ -642,6 +642,8 @@ const OrganDash = () => {
                         {login.roles === "admin" &&
                             <div className="input-group mb-3 justify-content-center">
                                 <select value={asignTo} onChange={(e) => setAsignTo(e.target.value)} id="state" className="input-group-text">
+                                    <option>Choose...</option>
+
                                     <option>Ali Kachef </option>
                                     <option>Robert Warren </option>
                                     <option>Noah</option>
@@ -651,6 +653,7 @@ const OrganDash = () => {
                         {login.roles === "admin" &&
                             <div className="input-group mb-3 justify-content-center">
                                 <select value={status} onChange={(e) => setStatus(e.target.value)} id="state" className="input-group-text">
+                                    <option>Choose...</option>
                                     <option>Open</option>
                                     <option>Close</option>
                                 </select>
@@ -659,6 +662,7 @@ const OrganDash = () => {
                         {login.roles === "admin" &&
                             <div className="input-group mb-3 justify-content-center">
                                 <select value={urgency} onChange={(e) => setUrgency(e.target.value)} id="state" className="input-group-text">
+                                    <option>Choose...</option>
                                     <option>Urgent</option>
                                     <option>Top</option>
                                     <option>Modrate</option>

@@ -14,14 +14,17 @@ const Home = () => {
         <>
 
             <main role="main">
+                
                 <nav className="navbar  navbar-dark bg-dark">
+                    
                     <div className="dash">
                         < img className="imageIcon" src={icon} />
-                        <h3 className="m-2 text-white">Bug Tracker</h3>
+                        <h3 className="m-2 dash-text text-white">Bug Tracker</h3>
                     </div>
                     <div className="navAdd">
                         <a href="/login" type="button" className=" m-2 btn btn-outline-primary">Login</a>
                     </div>
+                    
                 </nav>
                 <div className="main-body">
                     <div className="jumbotron">
