@@ -7,13 +7,20 @@ body{
     width: 8%;
 }
 .bugs-container{
-    
     position: relative;
     background: rgba(255, 255, 255, 0.5);
     max-width: 90%;
     margin: auto;
-    padding: 45px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.attachButton{
+    cursor: pointer;
+}
+
+.table-container{
+    margin: 5px;
+    padding-bottom: 5px;
 }
 
 .dash{
@@ -44,12 +51,23 @@ body{
     margin: auto;
     
 }
-.navAdd{
+
+.videoContainer{
+    max-width: 600px;
+    background: black;
     display: flex;
+    border-radius:0 0 15px 15px;
+
 }
-.navAdd > h4{
-    padding: 10px;
+.commentImage{
+    max-width: 600px;
+    border-radius: 0 0 15px 15px;
+    background-color: floralwhite;
+    display: flex;
+    margin: auto;
+   
 }
+
 
 .road-map{
     text-align: center;
@@ -121,6 +139,9 @@ body{
     border: none;
     transform: scale(0.95);
 }
+.commentVideo{
+    max-width: 350px;
+}
 
 @keyframes gradientBG {
 	0% {
@@ -133,3 +154,69 @@ body{
 		background-position: 0% 50%;
 	}
 }
+
+@media only screen and (max-width: 1100px) {
+    .navbar{
+      
+        display: flex;
+
+    }
+    .commentVideo{
+        max-width: 275px;
+    }
+    .videoContainer{
+        max-width: 600px;
+        height: 200px;
+        background: black;
+        display: flex;
+        border-radius:0 0 15px 15px;
+    
+    }
+    .main-body{
+        background-repeat: repeat;
+    }
+    .navAdd{
+       align-items: center;
+       margin: auto;
+       
+    }
+    .dash-text{
+        display: flex;
+    }
+   
+  }
+  
+  @media only screen and (max-width: 568px) {
+    .imgbanner {
+        max-width: 0px;
+      }
+    .main-body{
+        background-repeat: repeat;
+    }
+
+    .table > tbody > tr > td {
+        font-size: 10px;
+      
+        
+    }
+    .description-table{
+        display: none;
+    }
+    
+
+    .table > tbody > tr > td > button {
+        font-size: 8px;   
+    }
+
+    .table > thead > tr > th {
+        font-size: 10px;
+    }
+
+    .bugs-container{
+        max-width: 100%;
+    }
+    .cardComment{
+        display: block;
+    }
+  
+  }

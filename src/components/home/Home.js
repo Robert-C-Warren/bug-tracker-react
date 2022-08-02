@@ -12,15 +12,16 @@ import "./Home.css"
 const Home = () => {
     return (
         <>
-
             <main role="main">
                 <nav className="navbar  navbar-dark bg-dark">
                     <div className="dash">
                         < img className="imageIcon" src={icon} />
-                        <h3 className="m-2 text-white">Bug Tracker</h3>
+                        <h3 className="m-2 dash-text text-white">Bug Tracker</h3>
                     </div>
-                    <div className="navAdd">
-                        <a href="/login" type="button" className=" m-2 btn btn-outline-primary">Login</a>
+                    <div>
+                        <div className="navAdd">
+                            <a href="/login" type="button" className=" m-2 btn btn-outline-primary">Login</a>
+                        </div>
                     </div>
                 </nav>
                 <div className="main-body">
@@ -31,7 +32,14 @@ const Home = () => {
                                 <div className="banner">
                                     <h1 className="display-3">Bug Manager</h1>
                                     <p>Our bug reporting tool is must have for every Organization. We make it very easy for your user to comunicate and report any issue and not only That. We also provide them with a simple alegent display of your current work Roadmap that explains what the company completed and yet to complete </p>
-                                    <p><a className="btn btn-primary btn-lg" href="/signup" role="button">Get Started &raquo;</a></p>
+                                    <div className="HomeButtons">
+                                        <div className="HomeButton">
+                                            <p><a className=" btn btn-primary btn-lg" href="/signup" role="button">Get Started &raquo;</a></p>
+                                        </div>
+                                        <div className="HomeButton">
+                                            <p><a className="btn btn-primary btn-lg" href="/organizationsignup" role="button">Use Our tool &raquo;</a></p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <img className="imgbanner" src={img7}></img>
                             </div>

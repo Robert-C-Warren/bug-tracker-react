@@ -1,4 +1,4 @@
-import "../user-page/Dashboard.css"
+import "./Dashboard.css"
 import React, { useEffect, useState } from "react"
 import icon from '../../components/icon-bug-15.jpg'
 import axios from "axios";
@@ -102,7 +102,7 @@ const Organization = () => {
             "organizationId": ID,
             "organizationName": organizationName,
             "organizationDescription": organizationDescription,
-            "imageUrl": imageUrl,
+            "data": imageUrl,
             "organizationBug": bugs
         }
         let yourConfig = {
@@ -118,6 +118,42 @@ const Organization = () => {
         }, 250)
     }
 
+    const organDelete = (id) => {
+        let yourConfig = {
+            headers: {
+                Authorization: "Bearer " + getToken()
+            }
+        }
+        axios.delete("http://localhost:8080/organ/" + id, yourConfig)
+        setTimeout(function () {
+            getOrganizations()
+            closeModal()
+        }, 250)
+    }
+
+    const uploadImage = async (e) => {
+        const file = e.target.files[0]
+        const base64 = await readFiledataAsLob(file)
+        setImageUrl(base64)
+    }
+    const readFiledataAsLob = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                resolve(event.target.result);
+            };
+
+            reader.onerror = (err) => {
+                reject(err);
+            };
+
+
+            reader.readAsDataURL(file)
+
+        })
+    }
+
 
 
     return (
@@ -128,28 +164,33 @@ const Organization = () => {
                         < img className="imageIcon" src={icon} />
                         <h3 className="m-2 text-white">Browse Organizations</h3>
                     </div>
-                    <div className="navAdd">
-                        <h4 className="text-white">{login.name}</h4>
-                        {login.roles === "admin" && <button onClick={(e) => addEditHandle(e)} className="m-2 btn btn-primary">Add</button>}
-                        <button className="m-2 btn btn-outline-light" onClick={() => logout()}>Logout</button>
+                    <div>
+                        <div className="navAdd">
+                            <h4 className="name m-auto text-white">{login.name}</h4>
+                            {login.roles === "admin" && <button onClick={(e) => addEditHandle(e)} className="m-2 btn btn-primary">Add</button>}
+                            <button className="m-2 btn btn-outline-light" onClick={() => logout()}>Logout</button>
+                        </div>
                     </div>
                 </nav>
             </div>
-            <div className="   bugs-container">
+            <div className="bugs-container">
                 <div className=" bugs-cards">
                     <div className="  container ">
                         <div >
                             {loading ?
                                 <div className=" cards">
                                     {Array.isArray(organs) ? organs.map((organs) => (
-                                        <div className="pb-5 cards-in">
+                                        <div className="cards-in">
                                             <Card style={{ width: '18rem' }}>
-                                                <Card.Img className=" pt-3 pb-3 m-auto" style={{ width: '100px' }} variant="top" src={organs.imageUrl} />
-                                                <Card.Body >
+                                                <Card.Img className=" cardImage pt-3 pb-3 m-auto" style={{ width: '100px' }} variant="top" src={organs.data} />
+                                                <Card.Body className="cardbody" >
                                                     <Card.Title>{organs.organizationName}</Card.Title>
-                                                    <Card.Text>{organs.organizationDescription}</Card.Text>
-                                                    <button className=" btn btn-primary" onClick={() => organDash(organs.organizationId)}>Go</button>
-                                                    {login.roles==="admin" && <button className="m-1 btn btn-primary" onClick={() => organUpdate(organs.organizationId, organs.imageUrl, organs.organizationName, organs.organizationDescription, organs.organizationBug)}>Update</button> }
+                                                    <Card.Text className="cardDescription">{organs.organizationDescription}</Card.Text>
+                                                    <Card.Text className="cardButtons">
+                                                        <button className=" btn btn-primary" onClick={() => organDash(organs.organizationId)}>Go</button>
+                                                        {login.roles === "admin" && <button className="m-1 btn btn-primary" onClick={() => organUpdate(organs.organizationId, organs.imageUrl, organs.organizationName, organs.organizationDescription, organs.organizationBug)}>Update</button>}
+                                                        {login.roles === "admin" && <button className="btn btn-danger" onClick={() => organDelete(organs.organizationId)}>Delete</button>}
+                                                    </Card.Text>
                                                 </Card.Body>
                                             </Card>
                                         </div>
@@ -167,8 +208,9 @@ const Organization = () => {
                         <input className="input-group-text " disabled={true} value={"ID: " + ID}></input>
                     </div>
 
-                    <div className="input-group mb-3 justify-content-center">
-                        <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="input-group-text" placeholder="Image URL"></input>
+                    <div className="input-group  mb-3 justify-content-center">
+                        <label className="input-group-text">Profile Image</label>
+                        <input className=" input-group-text" type="file" onChange={(e) => uploadImage(e)} />
                     </div>
                     <div className="input-group mb-3 justify-content-center">
                         <input value={organizationName} onChange={(e) => setOrganisationName(e.target.value)} className="input-group-text" placeholder="Name"></input>

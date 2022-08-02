@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import '../user-page/Dashboard.css'
+import './Dashboard.css'
 import { Modal } from 'react-bootstrap';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
@@ -9,6 +9,7 @@ import { TbBugOff } from 'react-icons/tb';
 import { getToken } from '../api/authenticationService'
 import icon from '../../components/icon-bug-15.jpg'
 import { getOrganId } from '../api/authenticationService'
+import { ImAttachment } from 'react-icons/im';
 
 const Dashboard = () => {
     const [login, setLogin] = useState({
@@ -28,6 +29,8 @@ const Dashboard = () => {
         bugDesc: '',
         bugUrgency: ''
     });
+    const [attatchment, setAttatchment] = useState();
+    const [filename, setFile] = useState();
 
     const [ID, setId] = useState(0);
     const [title, setTitle] = useState("");
@@ -61,18 +64,6 @@ const Dashboard = () => {
 
         await axios.get("http://localhost:8080/auth/userinfo", yourConfig)
             .then(response => setLogin(response.data))
-        {/*    
-        .catch(err => {
-                if (!err.ok) {
-                    setError(err.message)
-                    setVisiable(true)
-                    setTimeout(function () {
-                        setVisiable(false);
-                        setError('');
-                    }, 5000)
-                }
-            })
-        */}
         getBugs()
     }
 
@@ -82,12 +73,13 @@ const Dashboard = () => {
         getUserInfo();
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
         getSetToken();
         setTimeout(function () {
             getUserInfo()
         }, 5000)
         setLoading(false)
+
     }, [])
 
     const getBugs = async () => {
@@ -99,8 +91,6 @@ const Dashboard = () => {
         }
         await axios.get("http://localhost:8080/organ/bugs/" + organId, yourConfig)
             .then(response => setBugs(response.data))
-
-
     }
 
 
@@ -123,66 +113,8 @@ const Dashboard = () => {
         window.location.href = '/organization'
     }
 
-    const editCourse = (Id) => {
-        setButton(false)
-        let yourConfig = {
-            headers: {
-                Authorization: "Bearer " + token
-            }
-        }
-        axios.get("http://localhost:8080/bugs/" + Id, yourConfig)
-            .then(result => (setId(result.data.bugId),
-                setTitle(result.data.bugName),
-                setDesc(result.data.bugDesc),
-                setAsignTo(result.data.assignedTo),
-                setStatus(result.data.bugStatus),
-                setUrgency(result.data.bugUrgency)))
-        setModal(true)
-    }
-
-    const updateCourse = async (e) => {
-        e.preventDefault();
-        const bug = {
-            "bugId": ID,
-            "bugStatus": status,
-            "bugDesc": desc,
-            "assignedTo": asignTo,
-            "bugName": title,
-            "bugUrgency": urgency,
-            "published": true
-        }
-
-        let yourConfig = {
-            headers: {
-                Authorization: "Bearer " + token
-            },
-
-        };
-        await axios.put("http://localhost:8080/bugs", bug, yourConfig)
-        closeModal()
-        setModal(false)
-        setTimeout(function () {
-            getBugs()
-        }, 250)
-
-    }
-
-    const deleteCourse = (id) => {
-        let yourConfig = {
-            headers: {
-                Authorization: "Bearer " + token
-            }
-        }
-        axios.delete("http://localhost:8080/bug/" + id, yourConfig)
-        setModal(false)
-        setTimeout(function () {
-            getBugs()
-        }, 250)
-
-    }
-
     const addbug = async (e) => {
-        
+
         const bug = {
             "bugId": ID,
             "bugStatus": status,
@@ -199,7 +131,7 @@ const Dashboard = () => {
         }
         axios.post("http://localhost:8080/bug", bug, yourConfig)
         axios.get("http://localhost:8080/sendMail/" + login.email, yourConfig)
-        
+
 
         setModal(false)
         closeModal()
@@ -208,7 +140,7 @@ const Dashboard = () => {
             closeModal()
         }, 250)
 
-        
+
     }
 
     const renderSwitch = (param) => {
@@ -236,29 +168,6 @@ const Dashboard = () => {
         }
     }
 
-    const publishBug = async (bug) => {
-        const bugP = {
-            "bugId": bug.bugId,
-            "bugStatus": bug.bugStatus,
-            "bugDesc": bug.bugDesc,
-            "assignedTo": bug.assignedTo,
-            "bugName": bug.bugName,
-            "bugUrgency": bug.bugUrgency,
-            "published": true
-        }
-        let yourConfig = {
-            headers: {
-                Authorization: "Bearer " + token
-            },
-
-        };
-        await axios.put("http://localhost:8080/bugs", bugP, yourConfig)
-        closeModal()
-        setModal(false)
-        setTimeout(function () {
-            getBugs()
-        }, 250)
-    }
 
     const postComent = async (id) => {
         const comment = {
@@ -289,6 +198,28 @@ const Dashboard = () => {
         setTimeout(function () {
             getBugs()
         }, 250)
+    }
+
+    const uploadImage = async (e) => {
+        setFile(e.target.files[0])
+        const file = e.target.files[0]
+        const base64 = await readFiledataAsLob(file)
+        setAttatchment(base64)
+    }
+
+    {/** takes in a file and return a base64 data*/ }
+    const readFiledataAsLob = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                resolve(event.target.result);
+            };
+            reader.onerror = (err) => {
+                reject(err);
+            };
+            reader.readAsDataURL(file)
+
+        })
     }
 
     if (isLoading) {
@@ -322,7 +253,7 @@ const Dashboard = () => {
                 </nav>
                 <div className="bugs-container">
                     <div className="bugs-cards">
-                        <div className="container m-5 pb-5">
+                        <div className="container">
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
                             {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
                             <VerticalTimeline>
@@ -344,6 +275,19 @@ const Dashboard = () => {
                                                                 <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">X</button>}</span>
                                                                 <br />
                                                                 <div className="commentd"><span >{bugsC.text} </span></div>
+                                                                {/* Using substring to check if data is an image or a video
+                                                                    then placing it in the opropate type */}
+                                                                <div>
+                                                                    {bugsC.attachment !== null ?
+                                                                        (bugsC.attachment.substring(5, 10) === "image" ? <div className="commentImage"><img src={bugsC.attachment} style={{ width: "50%" }} className="m-auto" /></div> :
+                                                                            <div className="videoContainer">
+                                                                                <video className="m-auto commentVideo" controls>
+                                                                                    <source src={bugsC.attachment} type="video/mp4" />
+                                                                                </video>
+                                                                            </div>)
+                                                                        :
+                                                                        <div></div>}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -352,6 +296,10 @@ const Dashboard = () => {
                                             <div className="cardComment">
                                                 <div class="input-group mb-3">
                                                     <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
+                                                    <div className="input-group-append">
+                                                        <label className="btn btn-outline-primary" for="attach"><ImAttachment /></label>
+                                                        <input id="attach" onChange={(e) => uploadImage(e)} accept="image/png, image/gif, image/jpeg, video/mp4" className="form-control form-control-sm" type="file" style={{ display: "none" }} />
+                                                    </div>
                                                     <div className="input-group-append">
                                                         <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
                                                     </div>
@@ -377,6 +325,19 @@ const Dashboard = () => {
                                                                 <span>{login.roles === "admin" && <button onClick={() => deleteComment(bugs.bugId, bugsC.id)} className="btn  btn-danger btn-sm commentButton">X</button>}</span>
                                                                 <br />
                                                                 <div className="commentd"><span >{bugsC.text} </span></div>
+                                                                {/* Using substring to check if data is an image or a video
+                                                                    then placing it in the opropate type */}
+                                                                <div>
+                                                                    {bugsC.attachment !== null ?
+                                                                        (bugsC.attachment.substring(5, 10) === "image" ? <div className="commentImage"><img src={bugsC.attachment} style={{ width: "50%" }} className="m-auto" /></div> :
+                                                                            <div className="videoContainer">
+                                                                                <video className="m-auto commentVideo" controls>
+                                                                                    <source src={bugsC.attachment} type="video/mp4" />
+                                                                                </video>
+                                                                            </div>)
+                                                                        :
+                                                                        <div></div>}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -385,6 +346,10 @@ const Dashboard = () => {
                                             <div className="cardComment">
                                                 <div class="input-group mb-3">
                                                     <input type="textbox" className="form-control" placeholder="Enter your comment" onChange={(e) => setComments(e.target.value)} />
+                                                    <div className="input-group-append">
+                                                        <label className="btn btn-outline-primary" for="attach"><ImAttachment /></label>
+                                                        <input id="attach" onChange={(e) => uploadImage(e)} accept="image/png, image/gif, image/jpeg, video/mp4" className="form-control form-control-sm" type="file" style={{ display: "none" }} />
+                                                    </div>
                                                     <div className="input-group-append">
                                                         <button onClick={() => postComent(bugs.bugId)} className="btn btn-success" type="button">Post</button>
                                                     </div>
@@ -439,7 +404,6 @@ const Dashboard = () => {
                     </Modal.Body>
                     <Modal.Footer>
                         <button disabled={!buttonHandle} className="btn btn-success" onClick={(e) => addbug(e)} >Add</button>
-                        <button disabled={buttonHandle} className="btn btn-primary" onClick={(e) => updateCourse(e)}>Update</button>
                         <button className="btn btn-danger" onClick={() => closeModal()} >close</button>
                     </Modal.Footer>
                 </Modal>
