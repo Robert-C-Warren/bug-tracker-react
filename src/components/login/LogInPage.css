@@ -8,6 +8,15 @@
 	animation: gradientBG 15s ease infinite;
 }
 
+.Ofullpage{
+    padding: 5%;
+}
+
+.regesteriation{
+    display: block;
+    flex-wrap: wrap;
+    justify-content: stretch;
+}
 .fullpage-a{
     color: blue;
     text-decoration: none;
@@ -20,7 +29,7 @@
 .sigin-container {
     position: relative;
     background: rgba(255, 255, 255, 0.5);
-    max-width: 360px;
+    max-width: 600px;
     margin: auto;
     padding: 45px;
     text-align: center;
@@ -29,8 +38,9 @@
 
 .siginpanel {
     display: block;
-    text-align: center;
+
     margin: auto;
+    padding-bottom: 10px;
 }
 
 .sigintextbox {

@@ -1,12 +1,11 @@
 import './App.css';
 import LogInPage from './components/login/LogInPage'
 import SignUpPage from './components/login/SignUpPage';
-import Dashboard from './components/user-page/Dashboard'
-import AdminUserView from './components/user-page/AdminUserView'
 import Organization from './components/organizations/Organization';
 import OrganDash from './components/organizations/OrganDashboard';
 import AdminUser from './components/organizations/AdminUser'
 import Home from './components/home/Home';
+import SignUpOPage from './components/login/SignUpOPage';
 import {
   BrowserRouter,
   Routes,
@@ -20,7 +19,7 @@ const App = () => {
         <Route path="/login" element={<LogInPage />} />
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/all" element={<Dashboard />} />
+        <Route path="/organizationsignup" element={<SignUpOPage />} />
         <Route path="/userview" element={<AdminUser />} />
         <Route path='/dashboard' element={<Organization />}/>
         <Route path="/organization" element={<OrganDash />}/>

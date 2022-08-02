@@ -12,19 +12,17 @@ import "./Home.css"
 const Home = () => {
     return (
         <>
-
             <main role="main">
-
                 <nav className="navbar  navbar-dark bg-dark">
-
                     <div className="dash">
                         < img className="imageIcon" src={icon} />
                         <h3 className="m-2 dash-text text-white">Bug Tracker</h3>
                     </div>
-                    <div className="navAdd">
-                        <a href="/login" type="button" className=" m-2 btn btn-outline-primary">Login</a>
+                    <div>
+                        <div className="navAdd">
+                            <a href="/login" type="button" className=" m-2 btn btn-outline-primary">Login</a>
+                        </div>
                     </div>
-
                 </nav>
                 <div className="main-body">
                     <div className="jumbotron">
@@ -39,7 +37,7 @@ const Home = () => {
                                             <p><a className=" btn btn-primary btn-lg" href="/signup" role="button">Get Started &raquo;</a></p>
                                         </div>
                                         <div className="HomeButton">
-                                            <p><a className="btn btn-primary btn-lg" href="/signup" role="button">Use Our tool &raquo;</a></p>
+                                            <p><a className="btn btn-primary btn-lg" href="/organizationsignup" role="button">Use Our tool &raquo;</a></p>
                                         </div>
                                     </div>
                                 </div>

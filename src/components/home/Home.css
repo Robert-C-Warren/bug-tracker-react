@@ -19,9 +19,6 @@
     display: flex;
 }
 
-.nav-bar{
-    display: flex;
-}
 
 .main-body {
     padding-top: 3.5rem;
@@ -39,6 +36,9 @@
 }
 .HomeButton{
     margin-right: 20px;
+}
+.navAdd{
+    display: flex;
 }
 
 
@@ -64,14 +64,9 @@
     .main-body{
         background-repeat: repeat;
     }
-    .navAdd{
-        display: inline;
-       width: 5%;
+    .dash{
+        width: 50%;
     }
-    .dash-text{
-        display: flex;
-    }
-   
   }
   
   @media only screen and (max-width: 568px) {
@@ -80,6 +75,30 @@
       }
     .main-body{
         background-repeat: repeat;
+    }
+    .navbar{
+       display: flex;
+      
+    }
+    .dash > h3 {
+        font-size: 15px;        
+    }
+
+    .dash > img {
+        width: 25px;
+    }
+
+    .dash{
+        width: 25%;
+    }
+    
+    .navAdd{
+        display: flex;
+
+    }
+
+    .name{
+        font-size: 15px;
     }
     
   }
