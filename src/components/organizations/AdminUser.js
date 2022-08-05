@@ -257,6 +257,7 @@ const Dashboard = () => {
                             {login.roles === "user" && <h2 className="road-map">Road-Map</h2>}
                             {login.roles === "admin" && <h2 className=" pt-5 road-map">Users View:</h2>}
                             <VerticalTimeline>
+                                {/** Display bugs and filter out where bugstatus is closed */}
                                 {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Open")
                                     .map((bugs) => (
                                         <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'red', color: '#fff' }} icon={<BsFillBugFill />} >
@@ -307,6 +308,7 @@ const Dashboard = () => {
                                             </div>
                                         </VerticalTimelineElement>
                                     )) : []}
+                                    {/** Display bugs and filter out where bugstatus is closed */}
                                 {Array.isArray(bugs) ? bugs.filter(n => n.published === true).filter(n => n.bugStatus === "Close")
                                     .map((bugs) => (
                                         <VerticalTimelineElement className="vertical-timeline-element--work" date={bugs.bugId} iconStyle={{ background: 'green', color: '#fff' }} icon={<TbBugOff />} >
