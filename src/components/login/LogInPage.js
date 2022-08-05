@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import './LogInPage.css'
 import { userLogin } from '../api/authenticationService';
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const LogInPage = () => {
     let navigate = useNavigate();
     const [token, setToken] = useState();
-    const [login, setLogin] = useState([]);
+    const [login, setLogin] = useState(false);
     const [error, setError] = useState('');
     const [visiable, setVisiable] = useState(false);
 
@@ -20,21 +20,18 @@ const LogInPage = () => {
 
         e.preventDefault();
         const loginCredential = { email, password }
-
+        console.log(loginCredential)
         userLogin(loginCredential).then((response) => {
+            
             if (response.status == 200) {
                 setToken(response.data)
-                if (token != null || token != undefined) {
-                    localStorage.setItem("token", token.token)
-                    navigate("/dashboard")
-                }
             }
         })
         .catch(err => 
             setError("Email/password are incorrect"),
-            setVisiable(true),
+            setVisiable(!visiable),
             setTimeout(function () {
-                setVisiable(false);
+                setVisiable(!visiable);
             }, 5000))
 
 
@@ -44,6 +41,13 @@ const LogInPage = () => {
         
     */}
     }
+
+    useEffect(() => {
+        if (token != null || token != undefined) {
+            localStorage.setItem("token", token.token)
+            navigate("/dashboard")
+        }
+    }, )
 
     return (
         <>
