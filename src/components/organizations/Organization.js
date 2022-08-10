@@ -48,7 +48,7 @@ const Organization = () => {
         const organization = {
             "organizationName": organizationName,
             "organizationDescription": organizationDescription,
-            "imageUrl": imageUrl
+            "data": imageUrl
         }
         let yourConfig = {
             headers: {
