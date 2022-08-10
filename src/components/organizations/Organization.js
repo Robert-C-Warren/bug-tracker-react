@@ -25,6 +25,7 @@ const Organization = () => {
         window.location.href = '/'
     }
 
+    {/**run methods Onload  */}
     React.useEffect(() => {
         fetchOrganizations().then((response) => {
             setOrgans(response.data)
@@ -34,6 +35,7 @@ const Organization = () => {
         fetchUserData().then((response) => setLogin(response.data))
     }, [])
 
+    {/** Get organization*/ }
     const getOrganizations = async () => {
         await fetchOrganizations().then(reponse => {
             setOrgans(reponse.data)
@@ -41,6 +43,7 @@ const Organization = () => {
         })
     }
 
+    {/** Post method to add an organization  */ }
     const addorgan = async () => {
         const organization = {
             "organizationName": organizationName,
@@ -60,12 +63,14 @@ const Organization = () => {
         }, 250)
     }
 
+    {/** Save organization Id in localstorgae then reout to organizations  */}
     const organDash = async (organId) => {
         localStorage.setItem("CurrentOrganization", organId)
         window.location.href = "/organization"
 
     }
 
+    {/**cleare everything on close */}
     const closeModal = () => {
         setID(organs[organs.length - 1].organizationId + 1)
         setOrganisationName('')
@@ -87,6 +92,7 @@ const Organization = () => {
 
     }
 
+    {/**Set values of feilds to be pushed for update */}
     const organUpdate = (id, imageUrl, name, description, bugs) => {
         setButton(false)
         setID(id)
@@ -97,6 +103,7 @@ const Organization = () => {
         addEditHandle();
     }
 
+    {/** put method to update  an organization  */ }
     const updateOrgan = async () => {
         const organization = {
             "organizationId": ID,
@@ -118,6 +125,7 @@ const Organization = () => {
         }, 250)
     }
 
+    {/** delete method to remove organization */ }
     const organDelete = (id) => {
         let yourConfig = {
             headers: {
@@ -131,11 +139,14 @@ const Organization = () => {
         }, 250)
     }
 
+    {/** get the file from target then passes it to a methed then set it to attatchment */ }
     const uploadImage = async (e) => {
         const file = e.target.files[0]
         const base64 = await readFiledataAsLob(file)
         setImageUrl(base64)
     }
+
+    {/** takes in a file and return a base64 data*/ }
     const readFiledataAsLob = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -147,15 +158,10 @@ const Organization = () => {
             reader.onerror = (err) => {
                 reject(err);
             };
-
-
             reader.readAsDataURL(file)
 
         })
     }
-
-
-
     return (
         <>
             <div className="dashboard-fullpage">
@@ -179,6 +185,7 @@ const Organization = () => {
                         <div >
                             {loading ?
                                 <div className=" cards">
+                                    {/** When organs is loaded map their content to build cards */}
                                     {Array.isArray(organs) ? organs.map((organs) => (
                                         <div className="cards-in">
                                             <Card style={{ width: '18rem' }}>
